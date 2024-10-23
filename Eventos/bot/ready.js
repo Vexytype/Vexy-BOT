@@ -11,10 +11,14 @@ async function deleteCarts(client) {
   const agora = new Date();
   const tempoExpiracao = 10 * 60 * 1000; 
 
-  const usuarios = carrinhos.all(); 
+  const guildIID = await General.get('guildID')
+
+  if (!guildIID) return;
 
   const guild = await client.guilds.fetch(General.get('guildID'));
   if (!guild) return;
+
+  const usuarios = carrinhos.all(); 
 
   for (const { ID: userID, data: carrinhosDoUsuario } of usuarios) {
     for (const cartID in carrinhosDoUsuario) {
