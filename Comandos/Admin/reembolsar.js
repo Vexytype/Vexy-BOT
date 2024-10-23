@@ -1,6 +1,6 @@
 const Discord = require("discord.js")
 const {ApplicationCommandType, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ApplicationCommandOptionType} = require("discord.js")
-const { General, products, AprovadosLog, lojaInfo, carrinhos } = require("../../Database/index");
+const { General, products, lojaInfo, carrinhos } = require("../../Database/index");
 const { obterEmoji } = require("../../Functions/definicoes")
 const { refund } = require("../../Functions/loja")
 
