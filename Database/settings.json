@@ -1,0 +1,13 @@
+{
+    "owner": "",
+    "oficecolor": {
+        "main": "#FF8201",
+        "blue": "#0076af",
+        "red": "#F53A27",
+        "green": "#55F43F",
+        "yellow": "#F1E635"
+    },
+    "automod": {},
+    "SystemProtect": false,
+    "key":5050
+}
