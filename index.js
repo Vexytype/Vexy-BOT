@@ -34,7 +34,7 @@ const axios = require('axios'),
   url = 'https://discord.com/api/v10/applications/@me',
   data = {
     description:
-      '<:ed53:1276564802281672865> **Vexy Type**\nFeito em <:js:1253899725065945168>\nAtualizações: https://github.com/Vexytype/Vexy-Bot-Store',
+      '<:ed53:1276564802281672865> **Vexy Type**\nFeito em <:js:1253899725065945168>\nAtualizações: https://github.com/Vexytype/Vexy-BOT',
   }
 axios.patch(url, data, {
   headers: {
