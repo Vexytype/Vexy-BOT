@@ -45,7 +45,6 @@
     welcomis,
     products,
     lojaInfo,
-    AprovadosLog,
     carrinhos,
     EmojIs
   }
