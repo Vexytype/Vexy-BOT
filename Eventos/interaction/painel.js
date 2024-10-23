@@ -1608,7 +1608,7 @@ module.exports = {
 
                 if (tokenmp) {
 
-                    await General.set(`pagamentos.tokenMP`, tokenmp);
+                    await General.set(`TokenMP`, tokenmp);
                     configgggSales(client, interaction);
                 }
             }
