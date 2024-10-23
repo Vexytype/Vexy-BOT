@@ -1,6 +1,6 @@
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ChannelSelectMenuBuilder, ChannelType, RoleSelectMenuBuilder, AttachmentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, InteractionType } = require("discord.js");
 const Discord = require("discord.js")
-const { General, BList, tickets, announce, welcomis, products, AprovadosLog, lojaInfo, carrinhos } = require("../../Database/index");
+const { General, BList, tickets, announce, welcomis, products, lojaInfo, carrinhos } = require("../../Database/index");
 const { token } = require("../../token.json")
 const { panel } = require("../../Functions/painel");
 const { configgggSales, panelSales, GerenciarProduto, GerenciarCampoProd, notifyStock, downloadFile, obterEmoji, configCoupons } = require("../../Functions/definicoes")
