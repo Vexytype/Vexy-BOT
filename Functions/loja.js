@@ -124,8 +124,6 @@ async function CreateSale(channel, produtin, interaction, client) {
 
     const msgID = await products.get(`proodutos.${produtin}.messageid`) || null;
 
-
-
     const CampoQn = Object.keys(Valor2).length
     const CampoQnty = Number(CampoQn)
     let nameProd = Valor.Config.name
@@ -138,7 +136,7 @@ async function CreateSale(channel, produtin, interaction, client) {
         console.error("Canal não encontrado ou bot não tem acesso ao canal.");
         return;
     }
-    if (CampoQnty === 0) { return interaction.reply({ content: `O produto não possui campos para vendas.`, ephemeral: true }) };
+    if (CampoQnty === 0) { return interaction.editReply({ content: `O produto não possui campos para vendas.`, ephemeral: true }) };
 
     if (CampoQnty <= 1) {
         const primeiraChave = Object.keys(Valor2)[0];
@@ -189,11 +187,11 @@ async function CreateSale(channel, produtin, interaction, client) {
         const buttonrow = new ActionRowBuilder().addComponents(button)
 
         if (msgID !== null) {
-            const zack = msgID[0]
-            const channelCheck = await client.channels.cache.get(zack.channelid)
-            const msg = await channelCheck.messages.fetch(zack.msgid)
+            const zack = msgID[0] || null;
+            const channelCheck = await client.channels.cache.get(zack.channelid) || null;
+            const msg = await channelCheck.messages.fetch(zack.msgid) || null;
 
-            await msg.delete();
+            if(msg !== null) await msg.delete();
             products.delete(`proodutos.${produtin}.messageid`)
         }
 
