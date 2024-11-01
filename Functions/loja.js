@@ -152,13 +152,13 @@ async function CreateSale(channel, produtin, interaction, client) {
             .setDescription(`\`\`\`${descProd}\`\`\``)
             .addFields(
                 {
-                    name: `${EMOJI.vx12 == null ? `` : `<a:${EMOJI.vx12.name}:${EMOJI.vx12.id}>`} Produto`, value: `${nameCampo}`, inline: false
+                    name: `${EMOJI.vx12 == null ? `` : `<a:${EMOJI.vx12.name}:${EMOJI.vx12.id}>`}Produto`, value: `${nameCampo}`, inline: false
                 },
                 {
-                    name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor`, value: `\`R$ ${Number(priceCampo).toFixed(2)}\``, inline: true
+                    name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`}Valor`, value: `\`R$ ${Number(priceCampo).toFixed(2)}\``, inline: true
                 },
                 {
-                    name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`} Estoque`, value: `\`${estoqueCount}\``, inline: true
+                    name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`}Estoque`, value: `\`${estoqueCount}\``, inline: true
                 },
             )
             .setFooter(
@@ -335,13 +335,13 @@ async function UpdateSale(client, produtin, interaction) {
             .setDescription(`\`\`\`${descProd}\`\`\``)
             .addFields(
                 {
-                    name: `${EMOJI.vx12 == null ? `` : `<a:${EMOJI.vx12.name}:${EMOJI.vx12.id}>`} Produto`, value: `${nameCampo}`, inline: false
+                    name: `${EMOJI.vx12 == null ? `` : `<a:${EMOJI.vx12.name}:${EMOJI.vx12.id}>`}Produto`, value: `${nameCampo}`, inline: false
                 },
                 {
-                    name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor`, value: `\`R$ ${Number(priceCampo).toFixed(2)}\``, inline: true
+                    name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`}Valor`, value: `\`R$ ${Number(priceCampo).toFixed(2)}\``, inline: true
                 },
                 {
-                    name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`} Estoque`, value: `\`${estoqueCount}\``, inline: true
+                    name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`}Estoque`, value: `\`${estoqueCount}\``, inline: true
                 },
             )
             .setColor(General.get('oficecolor.main') || '#FF8201')
@@ -512,13 +512,13 @@ async function UpdateStock(client, produtin, interaction) {
             .setDescription(`\`\`\`${descProd}\`\`\``)
             .addFields(
                 {
-                    name: `${EMOJI.vx12 == null ? `` : `<a:${EMOJI.vx12.name}:${EMOJI.vx12.id}>`} Produto`, value: `${nameCampo}`, inline: false
+                    name: `${EMOJI.vx12 == null ? `` : `<a:${EMOJI.vx12.name}:${EMOJI.vx12.id}>`}Produto`, value: `${nameCampo}`, inline: false
                 },
                 {
-                    name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor`, value: `\`R$ ${Number(priceCampo).toFixed(2)}\``, inline: true
+                    name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`}Valor`, value: `\`R$ ${Number(priceCampo).toFixed(2)}\``, inline: true
                 },
                 {
-                    name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`} Estoque`, value: `\`${estoqueCount}\``, inline: true
+                    name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`}Estoque`, value: `\`${estoqueCount}\``, inline: true
                 },
             )
             .setColor(General.get('oficecolor.main') || '#FF8201')
@@ -730,7 +730,8 @@ async function openCart(produtin, CampoSelect, interaction) {
         creationDate: agora,
         channelid: infoRebuyC,
         msgid: infoRebuyM,
-        guildid: interaction.guild.id
+        guildid: interaction.guild.id,
+        USERID:interaction.user.id
     });
 
 
@@ -743,19 +744,19 @@ async function openCart(produtin, CampoSelect, interaction) {
         .setDescription(`\u200B`)
         .addFields(
             {
-                name: `${EMOJI.vx1 == null ? `` : `<:${EMOJI.vx1.name}:${EMOJI.vx1.id}>`} Carrinho`, value: `\`x${quantidadeCompra}\` - **${nameCampo}**`, inline: true
+                name: `${EMOJI.vx1 == null ? `` : `<:${EMOJI.vx1.name}:${EMOJI.vx1.id}>`}Carrinho`, value: `\`x${quantidadeCompra}\` - **${nameCampo}**`, inline: true
             },
             {
-                name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`} Em Estoque`, value: `\`${estoqueCampo}\``, inline: true
+                name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`}Em Estoque`, value: `\`${estoqueCampo}\``, inline: true
             },
             {
                 name: `\u200B`, value: `\u200B`, inline: false
             },
             {
-                name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor a ser Pago`, value: `\`R$ ${Number(priceCompra).toFixed(2)}\``, inline: true
+                name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`}Valor a ser Pago`, value: `\`R$ ${Number(priceCompra).toFixed(2)}\``, inline: true
             },
             {
-                name: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`} Cupom`, value: `${carrinhos.get(`${interaction.user.id}.${iDCarrin}.cupom`) == null ? 'Nenhum cupom utilizado' : `\`${carrinhos.get(`${interaction.user.id}.${iDCarrin}.cupom`)}\``}`, inline: true
+                name: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`}Cupom`, value: `${carrinhos.get(`${interaction.user.id}.${iDCarrin}.cupom`) == null ? 'Nenhum cupom utilizado' : `\`${carrinhos.get(`${interaction.user.id}.${iDCarrin}.cupom`)}\``}`, inline: true
             },
         )
         .setColor(General.get('oficecolor.main') || '#FF8201')
@@ -977,6 +978,7 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
 
             if (pays.data.status !== "approved") return;
 
+            collector.stop();
             clearInterval(int);
             const logEntrega = interaction.guild.channels.cache.get(General.get('logsVendasPUB')) || null;
             const CHFeedback = interaction.guild.channels.cache.get(General.get('VendasFeedback')) || null;
@@ -1054,7 +1056,7 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                 const embedEntrega = new EmbedBuilder()
                     .setAuthor({ name: `Entrega do Produto`, iconURL: "https://cdn.discordapp.com/emojis/1290144734529982474.webp?size=96&quality=lossless" })
                     .setDescription(`\`\`\`${removed}\`\`\``)
-                    .setColor(General.get('oficecolor.main') || '#FF8201')
+                    .setColor(General.get('oficecolor.green') || '#FF8201')
 
                 const buttonNotify = new ButtonBuilder()
                     .setCustomId(`esperarEstoque_${produtin}_${CampoSelect}_${userInteract}`)

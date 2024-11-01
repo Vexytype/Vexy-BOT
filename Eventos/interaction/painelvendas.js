@@ -128,7 +128,7 @@ module.exports = {
                 let currentSelectMenuBuilder;
 
                 if (produtosData == null || Object.keys(produtosData).length == 0) {
-                    return interaction.reply({ content: `${EMOJI.vx14 == null ? `` : `<:${EMOJI.vx14.name}:${EMOJI.vx14.id}>`} Não existe nenhum produto criado para gerenciar.`, ephemeral: true });
+                    return interaction.reply({ content: `${EMOJI.vx16 == null ? `` : `<:${EMOJI.vx16.name}:${EMOJI.vx16.id}>`} Não existe nenhum produto criado para gerenciar.`, ephemeral: true });
                 }
 
                 const menuIndex = Math.floor(optionsCount / 25);
@@ -628,19 +628,19 @@ module.exports = {
                     .setDescription(`\u200B`)
                     .addFields(
                         {
-                            name: `${EMOJI.vx1 == null ? `` : `<:${EMOJI.vx1.name}:${EMOJI.vx1.id}>`} Carrinho`, value: `\`x${quantytopay}\` - **${nameCampo}**`, inline: true
+                            name: `${EMOJI.vx1 == null ? `` : `<:${EMOJI.vx1.name}:${EMOJI.vx1.id}>`}Carrinho`, value: `\`x${quantytopay}\` - **${nameCampo}**`, inline: true
                         },
                         {
-                            name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`} Em Estoque`, value: `\`${estoqueCampo}\``, inline: true
+                            name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`}Em Estoque`, value: `\`${estoqueCampo}\``, inline: true
                         },
                         {
                             name: `\u200B`, value: `\u200B`, inline: false
                         },
                         {
-                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor a ser Pago`, value: `\`R$ ${Number(pricetopay).toFixed(2)}\``, inline: true
+                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`}Valor a ser Pago`, value: `\`R$ ${Number(pricetopay).toFixed(2)}\``, inline: true
                         },
                         {
-                            name: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`} Cupom`, value: `${cupomAplicado == null ? 'Nenhum cupom utilizado' : `\`${cupomAplicado}\``}`, inline: true
+                            name: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`}Cupom`, value: `${cupomAplicado == null ? 'Nenhum cupom utilizado' : `\`${cupomAplicado}\``}`, inline: true
                         }
                     )
                     .setColor(General.get('oficecolor.main') || '#FF8201')
@@ -717,12 +717,12 @@ module.exports = {
                     .setDescription(`\u200B`)
                     .addFields(
                         {
-                            name: `${EMOJI.vx1 == null ? `` : `<:${EMOJI.vx1.name}:${EMOJI.vx1.id}>`} Carrinho`,
+                            name: `${EMOJI.vx1 == null ? `` : `<:${EMOJI.vx1.name}:${EMOJI.vx1.id}>`}Carrinho`,
                             value: `\`x${quantytopay}\` - **${nameCampo}**`,
                             inline: true,
                         },
                         {
-                            name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`} Em Estoque`,
+                            name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`}Em Estoque`,
                             value: `\`${estoqueCampo}\``,
                             inline: true,
                         },
@@ -732,12 +732,12 @@ module.exports = {
                             inline: false,
                         },
                         {
-                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor a ser Pago`,
+                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`}Valor a ser Pago`,
                             value: `\`R$ ${Number(pricetopay).toFixed(2)}\``,
                             inline: true,
                         },
                         {
-                            name: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`} Cupom`,
+                            name: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`}Cupom`,
                             value: `${Valor3 == null ? 'Nenhum cupom utilizado' : `\`${Valor3}\``}`,
                             inline: true,
                         },
@@ -1013,19 +1013,19 @@ module.exports = {
                     .setDescription(`\u200B`)
                     .addFields(
                         {
-                            name: `${EMOJI.vx1 == null ? `` : `<:${EMOJI.vx1.name}:${EMOJI.vx1.id}>`} Carrinho`, value: `\`x${quantytopay}\` - **${nameCampo}**`, inline: true
+                            name: `${EMOJI.vx1 == null ? `` : `<:${EMOJI.vx1.name}:${EMOJI.vx1.id}>`}Carrinho`, value: `\`x${quantytopay}\` - **${nameCampo}**`, inline: true
                         },
                         {
-                            name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`} Em Estoque`, value: `\`${estoqueCampo}\``, inline: true
+                            name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`}Em Estoque`, value: `\`${estoqueCampo}\``, inline: true
                         },
                         {
                             name: `\u200B`, value: `\u200B`, inline: false
                         },
                         {
-                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor a ser Pago`, value: `\`R$ ${Number(valuetopay).toFixed(2)}\``, inline: true
+                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`}Valor a ser Pago`, value: `\`R$ ${Number(valuetopay).toFixed(2)}\``, inline: true
                         },
                         {
-                            name: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`} Cupom`, value: `${carrinhos.get(`${interaction.user.id}.${iDCarrin}.cupom`) == null ? 'Nenhum cupom utilizado' : `\`${carrinhos.get(`${interaction.user.id}.${iDCarrin}.cupom`)}\``}`, inline: true
+                            name: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`}Cupom`, value: `${carrinhos.get(`${interaction.user.id}.${iDCarrin}.cupom`) == null ? 'Nenhum cupom utilizado' : `\`${carrinhos.get(`${interaction.user.id}.${iDCarrin}.cupom`)}\``}`, inline: true
                         },
                     )
                     .setColor(General.get('oficecolor.main') || '#FF8201')
@@ -1106,19 +1106,19 @@ module.exports = {
                     .setDescription(`\u200B`)
                     .addFields(
                         {
-                            name: `${EMOJI.vx1 == null ? `` : `<:${EMOJI.vx1.name}:${EMOJI.vx1.id}>`} Carrinho`, value: `\`x${quantytopay}\` - **${nameCampo}**`, inline: true
+                            name: `${EMOJI.vx1 == null ? `` : `<:${EMOJI.vx1.name}:${EMOJI.vx1.id}>`}Carrinho`, value: `\`x${quantytopay}\` - **${nameCampo}**`, inline: true
                         },
                         {
-                            name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`} Em Estoque`, value: `\`${estoqueCampo}\``, inline: true
+                            name: `${EMOJI.vx9 == null ? `` : `<:${EMOJI.vx9.name}:${EMOJI.vx9.id}>`}Em Estoque`, value: `\`${estoqueCampo}\``, inline: true
                         },
                         {
                             name: `\u200B`, value: `\u200B`, inline: false
                         },
                         {
-                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor a ser Pago`, value: `\`R$ ${Number(pricetopay).toFixed(2)}\``, inline: true
+                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`}Valor a ser Pago`, value: `\`R$ ${Number(pricetopay).toFixed(2)}\``, inline: true
                         },
                         {
-                            name: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`} Cupom`, value: `${cupomAplicado == null ? 'Nenhum cupom utilizado' : `\`${cupomAplicado}\``}`, inline: true
+                            name: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`}Cupom`, value: `${cupomAplicado == null ? 'Nenhum cupom utilizado' : `\`${cupomAplicado}\``}`, inline: true
                         }
                     )
                     .setColor(General.get('oficecolor.main') || '#FF8201')

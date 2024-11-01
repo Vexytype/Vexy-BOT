@@ -44,7 +44,7 @@ module.exports = {
         } finally {
             lojaInfo.substr(`rendimentos.pedidosAprovados`, 1);
             lojaInfo.substr(`rendimentos.prodEntregues`, Valor.quantidade);
-            lojaInfo.substr(`rendimentos.pedidosAprovados`, Valor.valor);
+            lojaInfo.substr(`rendimentos.valortotal`, Valor.valor);
             carrinhos.set(`${Comprador}.${Pedido}.StatusBuy`, 'refunded');
             interaction.editReply({content:`${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} Reembolsado com sucesso!`, ephemeral:true});
         }
