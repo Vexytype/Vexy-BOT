@@ -1,10 +1,9 @@
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, RoleSelectMenuBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require("discord.js");
 const colors = require("colors");
-const { Reiniciarapp } = require("../../Functions/mensagemauto");
+const { Reiniciarapp, Antifraude } = require("../../Functions/mensagemauto");
 const { General, carrinhos } = require("../../Database");
 const { obterEmoji } = require("../../Functions/definicoes")
 const status = General.get('APP.STATUS')
-
 
 
 async function deleteCarts(client) {
@@ -121,8 +120,10 @@ module.exports = {
       client.user.setActivity(status);
     }
     Reiniciarapp(client);
+    Antifraude(client);
 
     setInterval(async () => { deleteCarts(client) }, 5000);
+    setInterval(async () => { Antifraude(client) }, 24 * 60 * 1000);
 
     console.clear();
     console.log(colors.green('[STATUS]') + " " + client.user.username + " acabou de iniciar.");
