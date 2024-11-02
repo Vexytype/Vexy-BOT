@@ -57,7 +57,6 @@ async function Antifraude(client) {
     const acesstoken = await General.get('TokenMP');
 
     if (!systemLogsChannelId || !acesstoken) {
-        console.error('Canal de logs do sistema ou token da API do Mercado Pago não configurados.');
         return;
     }
 

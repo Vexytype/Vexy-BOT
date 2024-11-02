@@ -1208,7 +1208,7 @@ module.exports = {
                 const arrayItens = [];
                 if (produto == '') {
                     for (let i = 0; i < qtd; i++) {
-                        const linha = `Contate a admnistração.`;
+                        const linha = `Contate a admnistração`;
                         arrayItens.push(linha);
                         await products.push(`proodutos.${produtin}.Campos.${CampoSelect}.stock`, ...arrayItens);
                     }
