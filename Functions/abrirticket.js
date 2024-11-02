@@ -53,6 +53,10 @@ async function abrirTicket(interaction, valor) {
                 allow: [Discord.PermissionFlagsBits.SendMessages],
                 allow: [Discord.PermissionFlagsBits.AttachFiles],
             },
+            {
+                id: interaction.guild.roles.everyone, 
+                deny: [Discord.PermissionFlagsBits.ViewChannel], 
+            },
         ],
     });
 
@@ -68,10 +72,11 @@ async function abrirTicket(interaction, valor) {
 
     const userAbriu = interaction.user.id
     const ThreadOPen = thread.id
-    const idTickeopen = interaction.client.channels.cache.get(ThreadOPen)
 
     tickets.set(`openeds.${ThreadOPen}`, ThreadOPen)
     tickets.set(`openeds.${ThreadOPen}.abriu`, userAbriu)
+    tickets.set(`openeds.${ThreadOPen}.channelId`, ThreadOPen)
+    tickets.set(`openeds.${ThreadOPen}.notifyadm`, false)
 
     const embed = new Discord.EmbedBuilder()
         .setAuthor({ name: `${interaction.user.username} | Solicitante`, iconURL: `${interaction.user.displayAvatarURL({ dynamic: true })}` })
@@ -107,11 +112,25 @@ async function abrirTicket(interaction, valor) {
         .setLabel('Notificar')
         .setEmoji('1251441491679645698')
         .setStyle(1)
+    const button4 = new ButtonBuilder()
+        .setCustomId('assumiirTicket')
+        .setLabel('Assumir Atendimento')
+        .setEmoji('1265035825419386911')
+        .setStyle(3)
+    const button5 = new ButtonBuilder()
+        .setCustomId('optionUserTicket')
+        .setLabel('Opções do usuario')
+        .setEmoji('1267597699931177014')
+        .setStyle(2)
 
     const row = new ActionRowBuilder()
         .addComponents(button3, button, button2);
+    const row1 = new ActionRowBuilder()
+        .addComponents(button4, button5);
 
-    thread.send({ components: [row], embeds: [embed], content: `${interaction.user} ${General.get('admrole') == null ? '' : `<@&${General.get('admrole')}>`} ${General.get('staffrole') == null ? '' : `<@&${General.get('staffrole')}>`}` })
+    thread.send({ components: [row1, row], embeds: [embed], content: `${interaction.user} ${General.get('admrole') == null ? '' : `<@&${General.get('admrole')}>`} ${General.get('staffrole') == null ? '' : `<@&${General.get('staffrole')}>`}` }).then((msg) => {
+        tickets.set(`openeds.${ThreadOPen}.msgId`, msg.id);
+    })
 
 }
 

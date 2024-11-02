@@ -90,30 +90,32 @@ async function estoqueCampos(CampoSelect, produtin, interaction, client) {
                 .setLabel('Estoque em arquivo')
                 .setEmoji(`1276927584214716538`)
                 .setStyle(1),
-
-            new ButtonBuilder()
-                .setCustomId(`estoquefantasma_${produtin}_${CampoSelect}`)
-                .setLabel('Estoque fantasma')
-                .setEmoji(`1178347870747906131`)
-                .setStyle(2)
         )
 
     const row3 = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
+                .setCustomId(`estoquefantasma_${produtin}_${CampoSelect}`)
+                .setLabel('Estoque fantasma')
+                .setEmoji(`1178347870747906131`)
+                .setStyle(2),
+            new ButtonBuilder()
                 .setCustomId(`downloadStock_${produtin}_${CampoSelect}`)
                 .setLabel('Backup Estoque')
                 .setEmoji(`1286148928835948574`)
                 .setStyle(2),
+        )
+
+    const row4 = new ActionRowBuilder()
+        .addComponents(
             new ButtonBuilder()
                 .setCustomId(`VoltarCampoConfig_${produtin}_${CampoSelect}`)
                 .setLabel('Voltar')
                 .setEmoji(`1265111710063132732`)
                 .setStyle(2)
-
         )
 
-    await interaction.update({ embeds: [], content: `Selecione o método`, components: [row2, row3], ephemeral: true });
+    await interaction.update({ embeds: [], content: `Selecione o método`, components: [row2, row3, row4], ephemeral: true });
 }
 
 async function CreateSale(channel, produtin, interaction, client) {
@@ -164,7 +166,6 @@ async function CreateSale(channel, produtin, interaction, client) {
             .setFooter(
                 { text: interaction.guild.name, iconURL: interaction.guild.iconURL({ dynamic: true }) }
             )
-            .setTimestamp()
 
         if (bannerProd !== null) {
             embed.setImage(`${bannerProd}`)
@@ -191,7 +192,7 @@ async function CreateSale(channel, produtin, interaction, client) {
             const channelCheck = await client.channels.cache.get(zack.channelid) || null;
             const msg = await channelCheck.messages.fetch(zack.msgid) || null;
 
-            if(msg !== null) await msg.delete();
+            if (msg !== null) await msg.delete();
             products.delete(`proodutos.${produtin}.messageid`)
         }
 
@@ -260,7 +261,6 @@ async function CreateSale(channel, produtin, interaction, client) {
             .setFooter(
                 { text: interaction.guild.name, iconURL: interaction.guild.iconURL({ dynamic: true }) }
             )
-            .setTimestamp()
 
         if (bannerProd !== null) {
             embed.setImage(`${bannerProd}`)
@@ -348,7 +348,6 @@ async function UpdateSale(client, produtin, interaction) {
             .setFooter(
                 { text: interaction.guild.name, iconURL: interaction.guild.iconURL({ dynamic: true }) }
             )
-            .setTimestamp()
 
         if (bannerProd !== null) {
             embed.setImage(`${bannerProd}`)
@@ -443,7 +442,6 @@ async function UpdateSale(client, produtin, interaction) {
                 { text: interaction.guild.name, iconURL: interaction.guild.iconURL({ dynamic: true }) }
             )
             .setColor(General.get('oficecolor.main') || '#FF8201')
-            .setTimestamp()
 
         if (bannerProd !== null) {
             embed.setImage(`${bannerProd}`)
@@ -525,7 +523,6 @@ async function UpdateStock(client, produtin, interaction) {
             .setFooter(
                 { text: interaction.guild.name, iconURL: interaction.guild.iconURL({ dynamic: true }) }
             )
-            .setTimestamp()
 
         if (bannerProd !== null) {
             embed.setImage(`${bannerProd}`)
@@ -611,7 +608,6 @@ async function UpdateStock(client, produtin, interaction) {
                 { text: interaction.guild.name, iconURL: interaction.guild.iconURL({ dynamic: true }) }
             )
             .setColor(General.get('oficecolor.main') || '#FF8201')
-            .setTimestamp()
 
         if (bannerProd !== null) {
             embed.setImage(`${bannerProd}`)
@@ -699,6 +695,10 @@ async function openCart(produtin, CampoSelect, interaction) {
                 allow: [Discord.PermissionFlagsBits.SendMessages],
                 allow: [Discord.PermissionFlagsBits.AttachFiles],
             },
+            {
+                id: interaction.guild.roles.everyone,
+                deny: [Discord.PermissionFlagsBits.ViewChannel],
+            },
         ],
     });
 
@@ -731,7 +731,7 @@ async function openCart(produtin, CampoSelect, interaction) {
         channelid: infoRebuyC,
         msgid: infoRebuyM,
         guildid: interaction.guild.id,
-        USERID:interaction.user.id
+        USERID: interaction.user.id
     });
 
 
@@ -883,6 +883,7 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
         }
         if (i.customId === 'cancellCompraA') {
             collector.stop();
+            clearInterval(int);
             carrinhos.delete(`${userInteract}.${iDCarrin}`);
             await interaction.channel.bulkDelete(5)
             interaction.followUp({ content: `${EMOJI.vx2 == null ? `` : `<a:${EMOJI.vx2.name}:${EMOJI.vx2.id}>`} Compra cancelada, o carrinho será fechado em 5 segundos.`, ephemeral: true });
@@ -1235,7 +1236,7 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                                     embeds: [
                                         new EmbedBuilder()
                                             .setAuthor({ name: `Error`, iconURL: "https://cdn.discordapp.com/emojis/1296861728163762206.webp?size=96&quality=lossless" })
-                                            .setDescription(`Houve um erro ao tentar adicionar cargo ao cliente, <@${userInteract}>\nPedido: \`${iDCarrin}\` Foi devidamente aprovado e entregue, porém não foi possivel adicionar o cargo ao usuario por falta de permissões.`)
+                                            .setDescription(`Houve um erro ao tentar adicionar cargo ao cliente, <@${userInteract}>\nPedido: \`${iDCarrin}\` Foi devidamente aprovado e entregue, porém não foi possivel adicionar o cargo de cliente ao usuario por falta de permissões.`)
                                             .setColor(General.get('oficecolor.green') || '#FF8201')
                                             .setFooter(
                                                 { text: interaction.guild.name, iconURL: interaction.guild.iconURL({ dynamic: true }) }
@@ -1245,7 +1246,7 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                                 });
                             }
                         } else {
-                            console.error("Erro inesperado:", error);
+                            console.error("Erro add role costumer:", error);
                         }
                     }
                 }
