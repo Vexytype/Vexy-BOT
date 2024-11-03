@@ -135,6 +135,8 @@ module.exports = {
                 } else {
                     tickets.set(`tickets.funcoes.${NOME}.emoji`, EMOJI)
                 }
+            } else {
+                tickets.set(`tickets.funcoes.${NOME}.emoji`, '1251441496104636496')
             }
 
             await painelTicket(client, interaction)
