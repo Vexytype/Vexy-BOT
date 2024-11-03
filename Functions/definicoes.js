@@ -524,8 +524,9 @@ async function obterEmoji() {
     const vx14 = await EmojIs.get(`Emojis.vx14`) || null;
     const vx15 = await EmojIs.get(`Emojis.vx15`) || null;
     const vx16 = await EmojIs.get(`Emojis.vx16`) || null;
+    const vx17 = await EmojIs.get(`Emojis.vx17`) || null;
 
-    return { vx1, vx2, vx3, vx4, vx5, vx6, vx7, vx8, vx9, vx10, vx11, vx12, vx13, vx14, vx15, vx16 }
+    return { vx1, vx2, vx3, vx4, vx5, vx6, vx7, vx8, vx9, vx10, vx11, vx12, vx13, vx14, vx15, vx16, vx17 }
 }
 
 async function configCoupons(produtin, CampoSelect, interaction, client) {3

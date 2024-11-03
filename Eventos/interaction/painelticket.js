@@ -10,6 +10,7 @@ const { painelTicket } = require("../../Functions/configurarTicket")
 const { BBlackList } = require("../../Functions/configblacklist")
 const { CreateMessageTicket, Checkarmensagensticket } = require("../../Functions/createticket")
 const { abrirTicket } = require("../../Functions/abrirticket")
+const transcript = require('discord-html-transcripts')
 const axios = require("axios");
 const fs = require('fs');
 const path = require('path');
@@ -135,6 +136,8 @@ module.exports = {
                 } else {
                     tickets.set(`tickets.funcoes.${NOME}.emoji`, EMOJI)
                 }
+            } else {
+                tickets.set(`tickets.funcoes.${NOME}.emoji`, '1251441496104636496')
             }
 
             await painelTicket(client, interaction)
@@ -574,56 +577,11 @@ module.exports = {
             abrirTicket(interaction, valorticket)
         }
 
-        if (interaction.isButton()) {
-            if (interaction.customId == 'arquivar') {
-
-
-                if (!interaction.member.roles.cache.has(General.get('admrole')) && !interaction.member.roles.cache.has(General.get('staffrole'))) {
-                    return interaction.reply({ content: `Você não tem permissão para fazer isso!`, ephemeral: true });
-                }
-
-                const LogTickket = interaction.guild.channels.cache.get(General.get(`logsticketChannel`));
-                const support = interaction.guild.roles.cache.get(General.get(`staffrole`));
-                const channel = interaction.channel
-                const ticketID = interaction.channel.id
-                const responsavel = interaction.user.id
-                const quemAbriu = tickets.get(`openeds.${ticketID}.abriu`)
-                const embedlog = new EmbedBuilder()
-                    .setAuthor({ name: `| Atendimento Arquivado`, iconURL: "https://cdn.discordapp.com/emojis/1265528440543645736.webp?size=96&quality=lossless" })
-                    .setDescription(`- **Atendimento:** \`${ticketID}\`\n- Aberto por: <@${quemAbriu}>\n- Arquivou:<@${responsavel}>`)
-                    .setColor(General.get('oficecolor.yellow'))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
-                    .setTimestamp();
-
-                const row1 = new ActionRowBuilder()
-                    .addComponents(
-                        new ButtonBuilder()
-                            .setURL(`https://discord.com/channels/${interaction.guild.id}/${channel.id}`)
-                            .setLabel('Visualizar ticket')
-                            .setEmoji('1262641763193978930')
-                            .setStyle(5)
-                    )
-
-                try {
-                    await interaction.message.delete()
-                    LogTickket.send({ embeds: [embedlog], components: [row1] })
-                } catch (error) {
-                    console.log(error)
-                }
-
-                try {
-                    LogTickket.send({ content: `${support}`, embeds: [embedlog], components: [row1] })
-                    await interaction.channel.setArchived(true)
-                    tickets.set(`openeds.${ticketID}.arquivou`, responsavel)
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-        }
-
         if (interaction.customId === 'notificaruser') {
+            const EMOJI = await obterEmoji();
+
             if (!interaction.member.roles.cache.has(General.get('admrole')) && !interaction.member.roles.cache.has(General.get('staffrole'))) {
-                return interaction.reply({ content: `Você não tem permissão para fazer isso!`, ephemeral: true });
+                return interaction.reply({ content: `${EMOJI.vx16 == null ? `` : `<:${EMOJI.vx16.name}:${EMOJI.vx16.id}>`} Você não tem permissão para fazer isso!`, ephemeral: true });
             }
             const ticketID = interaction.channel.id;
             const tickeNotify = interaction.channel;
@@ -631,6 +589,8 @@ module.exports = {
             const useratendimento = interaction.guild.members.cache.get(quemAbriu);
             const server = interaction.guild.name
             const modVexy = interaction.user.id
+
+            if (!useratendimento) return interaction.reply({ content: `${EMOJI.vx16 == null ? `` : `<:${EMOJI.vx16.name}:${EMOJI.vx16.id}>`} O usuário não se encontra no servidor.`, ephemeral: true });
 
             useratendimento.send({
                 content: ``, embeds: [
@@ -656,8 +616,80 @@ module.exports = {
 
         }
 
-        if (interaction.customId === 'deletar') {
+        if (interaction.customId === 'assumiirTicket') {
+            const EMOJI = await obterEmoji();
+            if (!interaction.member.roles.cache.has(General.get('admrole')) && !interaction.member.roles.cache.has(General.get('staffrole'))) {
+                return interaction.reply({
+                    content: `${EMOJI.vx16 == null ? `` : `<:${EMOJI.vx16.name}:${EMOJI.vx16.id}>`} Você não tem permissão para fazer isso!`,
+                    ephemeral: true
+                });
+            }
 
+            const ticketID = interaction.channel.id;
+            const tickeNotify = interaction.channel;
+            const quemAbriu = tickets.get(`openeds.${ticketID}.abriu`);
+            const useratendimento = interaction.guild.members.cache.get(quemAbriu);
+            const modVexy = interaction.user.id;
+
+
+            try {
+                await tickets.set(`openeds.${ticketID}.assumiu`, modVexy);
+                const response = await tickets.get(`openeds.${ticketID}.channelId`);
+                const response1 = await tickets.get(`openeds.${ticketID}.msgId`);
+                const threadTicket = await interaction.guild.channels.cache.get(response);
+
+                if (threadTicket) {
+                    const messageToEdit = await threadTicket.messages.fetch(response1);
+
+                    const button2 = new ButtonBuilder().setCustomId('deletar').setLabel('Deletar').setEmoji('1251441411266711573').setStyle(4);
+                    const button3 = new ButtonBuilder().setCustomId('notificaruser').setLabel('Notificar').setEmoji('1251441491679645698').setStyle(1);
+                    const button4 = new ButtonBuilder().setCustomId('assumiirTicket').setLabel('Atendimento assumido').setEmoji('1265035825419386911').setDisabled(true).setStyle(2);
+                    const button5 = new ButtonBuilder().setCustomId('optionUserTicket').setLabel('Opções do usuario').setEmoji('1267597699931177014').setStyle(2);
+
+                    const row = new ActionRowBuilder().addComponents(button3, button2);
+                    const row1 = new ActionRowBuilder().addComponents(button4, button5);
+
+                    await messageToEdit.edit({
+                        components: [row1, row],
+                    });
+                } else {
+                    console.log("O canal do ticket não foi encontrado.");
+                }
+            } catch (error) {
+                console.log("Erro:", error);
+            }
+
+            await interaction.reply({
+                content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} Você assumiu este ticket`, ephemeral: true
+            });
+
+            if (useratendimento) {
+                useratendimento.send({
+                    content: ``, embeds: [
+                        new EmbedBuilder()
+                            .setAuthor({ name: `Notificação`, iconURL: "https://cdn.discordapp.com/emojis/1276564803762258082.webp?size=96&quality=lossless" })
+                            .setDescription(`- O atendente <@${modVexy}> assumiu a responsabilidade do seu atendimento.\n- **Clique no botão abaixo para ser redirecionado até seu Ticket**`)
+                            .setColor(General.get('oficecolor.main'))
+                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                            .setTimestamp()
+                    ],
+                    components: [
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setURL(`https://discord.com/channels/${interaction.guild.id}/${tickeNotify.id}`)
+                                    .setLabel('Ir para o Ticket')
+                                    .setStyle(5)
+                            )
+                    ],
+                });
+            } else {
+                return;
+            }
+        }
+
+        if (interaction.customId === 'deletar') {
+            const EMOJI = await obterEmoji();
             if (!interaction.member.roles.cache.has(General.get('admrole')) && !interaction.member.roles.cache.has(General.get('staffrole'))) {
                 return interaction.reply({ content: `Você não tem permissão para fazer isso!`, ephemeral: true });
             }
@@ -667,31 +699,226 @@ module.exports = {
             const ticketID = interaction.channel.id
             const responsavel = interaction.user.id
             tickets.set(`openeds.${ticketID}.fechou`, responsavel)
-            const quemAbriu = tickets.get(`openeds.${ticketID}.abriu`)
+            const quemAbriu = await tickets.get(`openeds.${ticketID}.abriu`)
+            const quemAssumiu = await tickets.get(`openeds.${ticketID}.assumiu`)
             const aDemes = interaction.guild.roles.cache.get(General.get(`admrole`));
-            const embedlog = new EmbedBuilder()
+            const userTicket = interaction.guild.members.cache.get(quemAbriu);
+            let embedlog = new EmbedBuilder()
                 .setAuthor({ name: `| Atendimento Finalizado`, iconURL: "https://cdn.discordapp.com/emojis/1265528440543645736.webp?size=96&quality=lossless" })
-                .setDescription(`- **Atendimento:** \`${ticketID}\`\n- Aberto por: <@${quemAbriu}>\n- Fechado por: <@${responsavel}>`)
+                .setDescription(`- **Atendimento:** \`${ticketID}\`\n- Aberto por: <@${quemAbriu}>\n- Fechado por: <@${responsavel}>\n- Assumido por: <@${quemAssumiu == null ? `Ninguem` : quemAssumiu}>`)
                 .setColor(General.get('oficecolor.red'))
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                 .setTimestamp();
 
-            const embedErro = new EmbedBuilder()
-                .setAuthor({ name: `Análise de Erros`, iconURL: "https://cdn.discordapp.com/emojis/1267381926927532146.webp?size=96&quality=lossless", })
-                .setTitle('Erro de Logs')
-                .setDescription(`- Erro ao enviar Logs do ticket**\n- **| Este erro pode ocorrer caso não tenha definido um canal para ser receptor das Logs em definições!**`)
-                .setColor(General.get('oficecolor.red'))
-                .setTimestamp()
-                .setFooter({ text: `Sistema de análise de Erros`, iconURL: "https://cdn.discordapp.com/emojis/1267381920333955112.webp?size=96&quality=lossless" })
-
-
-            try {
-                interaction.channel.delete()
-                LogTickket.send({ embeds: [embedlog] })
-            } catch (error) {
-                LogGeraiss.send({ content: `${aDemes}`, embeds: [embedErro] })
+            if(tickets.get(`openeds.${ticketID}.suggestion`) !== null) {
+                embedlog.addFields({
+                    name: `${EMOJI.vx15 == null ? `` : `<:${EMOJI.vx15.name}:${EMOJI.vx15.id}>`} Sugestão de Melhorias:`, value: `\`${tickets.get(`openeds.${ticketID}.suggestion`)}\``, inline: true
+                })
             }
 
+            try {
+                const attachment = await transcript.createTranscript(interaction.channel, {
+                    limit: -1,
+                    returnType: 'attatchment',
+                    filename:`${interaction.channel.name}.html`,
+                    saveImages:true,
+                    footerText: 'Exported ${number} messages',
+                    poweredBy:true
+                });
+
+                interaction.channel.delete()
+                if(LogTickket) {
+                    LogTickket.send({ embeds: [embedlog]}).then(() => {
+                        LogTickket.send({files:[attachment]});
+                    }).catch((error) => {
+                        console.log(error)
+                    })
+                }
+                if(userTicket) {
+                    userTicket.send({embeds:[
+                        new EmbedBuilder()
+                        .setAuthor({ name: `Atendimento Finalizado`, iconURL: "https://cdn.discordapp.com/emojis/1301454740328288307.webp?size=96&quality=lossless" })
+                        .setDescription(`- Seu atendimento com Id; \`${ticketID}\`foi finalizado, abaixo foi enviado o transcript do seu atendimento`)
+                        .setColor(General.get('oficecolor.red'))
+                        .setTimestamp()
+                        .setFooter(
+                            { text: interaction.guild.name, iconURL: interaction.guild.iconURL({ dynamic: true }) }
+                        )
+                    ]}).then(() => {
+                        userTicket.send({files:[attachment]});
+                    }).catch((error) => {
+                        console.log(error)
+                    })
+                } 
+            } catch (error) {
+                LogGeraiss.send({ content: `${aDemes}`, embeds: [
+                    new EmbedBuilder()
+                .setAuthor({ name: `Análise de Erros`, iconURL: "https://cdn.discordapp.com/emojis/1267381926927532146.webp?size=96&quality=lossless", })
+                .setTitle('Erro de Logs')
+                .setDescription(`- Erro ao enviar Logs do ticket\n- Este erro pode ocorrer caso não tenha definido um canal para ser receptor das Logs em definições!`)
+                .setColor(General.get('oficecolor.red'))
+                .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL({ dynamic: true }) })
+                .setTimestamp()
+                ] })
+            }
+
+        }
+
+        if (interaction.customId === 'optionUserTicket') {
+            const EMOJI = await obterEmoji();
+            const ticketID = interaction.channel.id;
+            const validation = await tickets.get(`openeds.${ticketID}.notifyadm`);
+
+            if (interaction.user.id !== tickets.get(`openeds.${ticketID}.abriu`)) {
+                return interaction.reply({ content: `${EMOJI.vx16 == null ? `` : `<:${EMOJI.vx16.name}:${EMOJI.vx16.id}>`} Você não tem permissão para fazer isso!`, ephemeral: true });
+            }
+
+            if (validation) {
+                interaction.reply({
+                    content: `Escolha a opção que deseja.\nLembrando que só possivel solicitar ajuda imediata uma vez.`, components: [
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`ajudaImediata`)
+                                    .setLabel('Ajuda Imediata Solicitada')
+                                    .setEmoji('1276564803762258082')
+                                    .setDisabled(true)
+                                    .setStyle(2),
+                                new ButtonBuilder()
+                                    .setCustomId(`sugestaoTicket`)
+                                    .setLabel('Sugestão de Melhorias')
+                                    .setEmoji('1276927585544044598')
+                                    .setStyle(2),
+                            ),
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`sairTicket`)
+                                    .setLabel('Sair do Atendimento')
+                                    .setEmoji('1251441490576805979')
+                                    .setStyle(2),
+                            )
+                    ], ephemeral: true
+                });
+            } else {
+                interaction.reply({
+                    content: `Escolha a opção que deseja.\nLembrando que só possivel solicitar ajuda imediata uma vez.`, components: [
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`ajudaImediata`)
+                                    .setLabel('Solicitar Ajuda Imediata')
+                                    .setEmoji('1276564803762258082')
+                                    .setStyle(2),
+                                new ButtonBuilder()
+                                    .setCustomId(`sugestaoTicket`)
+                                    .setLabel('Sugestão de Melhorias')
+                                    .setEmoji('1276927585544044598')
+                                    .setStyle(2),
+                            ),
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`sairTicket`)
+                                    .setLabel('Sair do Atendimento')
+                                    .setEmoji('1251441490576805979')
+                                    .setStyle(2),
+                            )
+                    ], ephemeral: true
+                });
+            }
+        }
+
+        if (interaction.customId === 'ajudaImediata') {
+            const EMOJI = await obterEmoji();
+            const ticketID = interaction.channel.id;
+            const userId = interaction.user.id;
+            await tickets.set(`openeds.${ticketID}.notifyadm`, true);
+            const asummido = await tickets.get(`openeds.${ticketID}.assumiu`);
+
+            if (asummido == null) {
+                const admnotify = interaction.guild.channels.cache.get(General.get(`logsticketChannel`));
+
+                admnotify.send({
+                    content: `${EMOJI.vx6 == null ? `` : `<:${EMOJI.vx6.name}:${EMOJI.vx6.id}>`} O usuário <@${userId}> solicitou atendimento imediato.`,
+                    components: [
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setURL(`https://discord.com/channels/${interaction.guild.id}/${ticketID}`)
+                                    .setLabel('Ir ate Atendimento')
+                                    .setEmoji('1251441496104636496')
+                                    .setStyle(5),
+                            )
+                    ]
+                });
+            } else {
+                const modNotify = await interaction.guild.members.cache.get(asummido);
+
+                modNotify.send({
+                    content: `${EMOJI.vx6 == null ? `` : `<:${EMOJI.vx6.name}:${EMOJI.vx6.id}>`} O usuário <@${userId}> solicitou atendimento imediato.`,
+                    components: [
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setURL(`https://discord.com/channels/${interaction.guild.id}/${ticketID}`)
+                                    .setLabel('Ir ate Atendimento')
+                                    .setEmoji('1251441496104636496')
+                                    .setStyle(5),
+                            )
+                    ]
+                });
+            }
+
+            interaction.update({ content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} O atendimento imediato foi solicitado, aguarde até que alguem da admnistração lhe atenda.`, components: [], ephemeral: true });
+        }
+
+        if (interaction.customId === 'sugestaoTicket') {
+
+            const modal = new ModalBuilder()
+                .setCustomId(`modalSuggestTicket`)
+                .setTitle('Sugestão de Melhorias');
+
+            const suggestInput = new TextInputBuilder()
+                .setCustomId('suggestTicket')
+                .setLabel('Insira sua Sugestão')
+                .setPlaceholder('Caso escreva coisas indevidas, será banido!')
+                .setMinLength(15)
+                .setStyle(TextInputStyle.Paragraph)
+                .setRequired(true)
+
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(suggestInput)
+            );
+
+            await interaction.showModal(modal);
+        }
+
+        if (interaction.isModalSubmit() && interaction.customId === "modalSuggestTicket") {
+            const sug = interaction.fields.getTextInputValue('suggestTicket');
+            const EMOJI = await obterEmoji();
+            const ticketID = interaction.channel.id;
+
+            await tickets.set(`openeds.${ticketID}.suggestion`, sug);
+
+            interaction.reply({ content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} Sua sugestão foi enviada!`, ephemeral: true });
+        }
+
+        if (interaction.customId === 'sairTicket') {
+            const EMOJI = await obterEmoji();
+            const ticketID = interaction.channel.id;
+            const thread = await interaction.guild.channels.cache.get(ticketID);
+            const userId = interaction.user.id;
+
+            if (thread) {
+                try {
+                    await thread.members.remove(userId).then(() => {
+                        interaction.update({ content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} Você foi removido do atendimento com sucesso, apenas clique em outro canal e não verá mais o canal.`, components: [], ephemeral: true });
+                    })
+                } catch (error) {
+                    console.error("Erro ao remover usuario do ticket:", error);
+                }
+            }
         }
 
         if (interaction.customId === 'sincronizarticket') {

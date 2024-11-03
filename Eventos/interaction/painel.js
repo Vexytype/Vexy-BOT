@@ -48,6 +48,7 @@ module.exports = {
                     "https://cdn.discordapp.com/emojis/1286148923605385276.webp?size=96&quality=lossless",
                     "https://cdn.discordapp.com/emojis/1273127418386976788.webp?size=96&quality=lossless",
                     "https://cdn.discordapp.com/emojis/1297714662489591870.webp?size=96&quality=lossless",
+                    "https://cdn.discordapp.com/emojis/1301452504592154645.webp?size=96&quality=lossless",
                 ];
         
                 try {
