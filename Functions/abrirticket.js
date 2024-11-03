@@ -97,11 +97,6 @@ async function abrirTicket(interaction, valor) {
         embed.setColor(General.get('oficecolor.main'))
     }
 
-    const button = new ButtonBuilder()
-        .setCustomId('arquivar')
-        .setLabel('Arquivar')
-        .setEmoji('1263220778040557599')
-        .setStyle(1)
     const button2 = new ButtonBuilder()
         .setCustomId('deletar')
         .setLabel('Deletar')
@@ -124,7 +119,10 @@ async function abrirTicket(interaction, valor) {
         .setStyle(2)
 
     const row = new ActionRowBuilder()
+        .addComponents(button3, button2);
+
         .addComponents(button3, button, button2);
+
     const row1 = new ActionRowBuilder()
         .addComponents(button4, button5);
 

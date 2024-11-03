@@ -13,6 +13,8 @@ function CreateMessageTicket(interaction, channel, client){
 
     if (arrayDeValores[0].emoji !== undefined) {
         button.setEmoji(arrayDeValores[0].emoji)
+    } else {
+        button.setEmoji('1251441496104636496')
     }
 
     const buttonrow = new ActionRowBuilder().addComponents(button)
@@ -29,12 +31,10 @@ function CreateMessageTicket(interaction, channel, client){
             label: `${item.nome}`,
             description: `${item.descricao == undefined ? item.predescricao : item.descricao}`,
             value: `${element}`,
-            ...item.emoji == undefined ? {} : { emoji: `${item.emoji}` }
+            emoji: item.emoji == undefined ? '1251441496104636496' : item.emoji
         }
 
-
         selectMenuBuilder.addOptions(option);
-
     }
 
     const style2row = new ActionRowBuilder().addComponents(selectMenuBuilder);
@@ -60,14 +60,18 @@ function CreateMessageTicket(interaction, channel, client){
 
     const channel2 = client.channels.cache.get(channel)
 
-
+    if(!channel2) return;
     if (Object.keys(ggg).length == 1) {
         channel2.send({ components: [buttonrow], embeds: [embed] }).then(msg => {
             tickets.push(`tickets.messageid`, { msgid: msg.id, channelid: msg.channel.id, guildid: msg.guild.id })
+        }).catch((error) => {
+            console.log(error)
         })
     } else {
         channel2.send({ components: [style2row], embeds: [embed] }).then(msg => {
             tickets.push(`tickets.messageid`, { msgid: msg.id, channelid: msg.channel.id, guildid: msg.guild.id })
+        }).catch((error) => {
+            console.log(error)
         })
     }
 }
@@ -106,16 +110,13 @@ async function Checkarmensagensticket(client) {
             label: `${item.nome}`,
             description: `${item.predescricao == undefined ? item.predescricao : item.predescricao}`,
             value: `${element}`,
-            ...item.emoji == undefined ? {} : { emoji: `${item.emoji}` }
+            emoji: item.emoji == undefined ? '1251441496104636496' : item.emoji
         }
 
-
         selectMenuBuilder.addOptions(option);
-
     }
 
     const style2row = new ActionRowBuilder().addComponents(selectMenuBuilder);
-
 
     const embed = new EmbedBuilder()
         .setTitle(`${aparencia.title}`)
@@ -148,7 +149,7 @@ async function Checkarmensagensticket(client) {
                 msg.edit({ components: [style2row], embeds: [embed] })
             }
         } catch (error) {
-
+            console.log(error)
         }
     }
 }

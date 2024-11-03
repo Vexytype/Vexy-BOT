@@ -1130,6 +1130,8 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                                 .setTimestamp()
                         ], files: [], components: [rowNotify]
                     });
+                }).catch((error) => {
+                    console.log(error)
                 })
             } else {
                 try {
@@ -1209,7 +1211,9 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                                     .setTimestamp()
                             ], files: [], components: [rowNotify]
                         });
-                    });
+                    }).catch((error) => {
+                        console.log(error)
+                    })
                 } catch (error) {
                     console.log(error)
                 }

@@ -8,16 +8,14 @@ const status = General.get('APP.STATUS')
 
 async function deleteCarts(client) {
   const agora = new Date();
-  const tempoExpiracao = 10 * 60 * 1000; 
+  const tempoExpiracao = 10 * 60 * 1000;
 
   const guildIID = await General.get('guildID')
-
-  if (!guildIID) return;
-
   const guild = await client.guilds.fetch(guildIID);
-  if (!guild) return;
+  if (!guildIID || !guild) return;
 
-  const usuarios = carrinhos.all(); 
+
+  const usuarios = carrinhos.all();
 
   for (const { ID: userID, data: carrinhosDoUsuario } of usuarios) {
     for (const cartID in carrinhosDoUsuario) {
@@ -33,16 +31,16 @@ async function deleteCarts(client) {
           const membro = guild.members.cache.get(userID);
           const LogVenda = await client.channels.cache.get(General.get('logsVendas'));
           const channel = await client.channels.cache.get(carrinho.idCart) || await client.channels.fetch(carrinho.idCart).catch(() => null);
-          
+
           const neworder = new ButtonBuilder()
-          .setURL(`https://discord.com/channels/${carrinho.guildid}/${carrinho.channelid}/${carrinho.msgid}`)
-          .setLabel('Novo Pedido')
-          .setEmoji(`1297811409132064768`)
-          .setStyle(5)
+            .setURL(`https://discord.com/channels/${carrinho.guildid}/${carrinho.channelid}/${carrinho.msgid}`)
+            .setLabel('Novo Pedido')
+            .setEmoji(`1297811409132064768`)
+            .setStyle(5)
 
           const rowNotify = new ActionRowBuilder().addComponents(neworder)
 
-          if(membro){
+          if (membro) {
             membro.send({
               content: ``, embeds: [
                 new EmbedBuilder()
@@ -65,35 +63,36 @@ async function deleteCarts(client) {
                     { text: guild.name, iconURL: guild.iconURL({ dynamic: true }) }
                   )
                   .setTimestamp()
-            ], components:[rowNotify]
+              ], components: [rowNotify]
             });
 
           }
 
-          if(LogVenda){
-            LogVenda.send({content:``, embeds:[
-              new EmbedBuilder()
+          if (LogVenda) {
+            LogVenda.send({
+              content: ``, embeds: [
+                new EmbedBuilder()
                   .setAuthor({ name: `Pedido Cancelado`, iconURL: "https://cdn.discordapp.com/emojis/1296861882266681384.webp?size=96&quality=lossless" })
                   .setDescription(`O tempo para o pagamento se expirou, entre em contato com ${membro == null ? `o usuário` : `<@${membro}>`}, não perca seu cliente!`)
                   .addFields(
-                      {
-                          name: `${EMOJI.vx5 == null ? `` : `<:${EMOJI.vx5.name}:${EMOJI.vx5.id}>`} ID do Pedido`, value: `\`${carrinho.idCart}\``, inline: true
-                      },
-                      {
-                          name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor`, value: `\`R$ ${Number(carrinho.valor).toFixed(2)}\``, inline: true
-                      },
-                      {
-                          name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${carrinho.quantidade}\` - ${carrinho.itemBuy}`, inline: false
-                      },
+                    {
+                      name: `${EMOJI.vx5 == null ? `` : `<:${EMOJI.vx5.name}:${EMOJI.vx5.id}>`} ID do Pedido`, value: `\`${carrinho.idCart}\``, inline: true
+                    },
+                    {
+                      name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor`, value: `\`R$ ${Number(carrinho.valor).toFixed(2)}\``, inline: true
+                    },
+                    {
+                      name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${carrinho.quantidade}\` - ${carrinho.itemBuy}`, inline: false
+                    },
 
                   )
                   .setColor(General.get('oficecolor.red') || '#FF8201')
                   .setFooter(
-                      { text: guild.name, iconURL: guild.iconURL({ dynamic: true }) }
+                    { text: guild.name, iconURL: guild.iconURL({ dynamic: true }) }
                   )
                   .setTimestamp()
-            ], components:[]
-          });
+              ], components: []
+            });
           }
 
           if (channel) {
