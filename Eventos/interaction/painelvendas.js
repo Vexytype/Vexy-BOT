@@ -1060,7 +1060,7 @@ module.exports = {
                     return interaction.reply({ content: `Insira apenas números.`, ephemeral: true });
                 }
 
-                if (QTy >= estoqueCampo) {
+                if (QTy > estoqueCampo) {
                     return interaction.reply({ content: `A quantidade máxima em estoque é \`${estoqueCampo}\`.`, ephemeral: true });
                 }
 
