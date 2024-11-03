@@ -120,6 +120,9 @@ async function abrirTicket(interaction, valor) {
 
     const row = new ActionRowBuilder()
         .addComponents(button3, button2);
+
+        .addComponents(button3, button, button2);
+
     const row1 = new ActionRowBuilder()
         .addComponents(button4, button5);
 

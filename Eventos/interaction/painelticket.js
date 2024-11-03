@@ -625,6 +625,7 @@ module.exports = {
                 });
             }
 
+
             const ticketID = interaction.channel.id;
             const tickeNotify = interaction.channel;
             const quemAbriu = tickets.get(`openeds.${ticketID}.abriu`);
@@ -648,6 +649,34 @@ module.exports = {
 
                     const row = new ActionRowBuilder().addComponents(button3, button2);
                     const row1 = new ActionRowBuilder().addComponents(button4, button5);
+
+=======
+
+            const ticketID = interaction.channel.id;
+            const tickeNotify = interaction.channel;
+            const quemAbriu = tickets.get(`openeds.${ticketID}.abriu`);
+            const useratendimento = interaction.guild.members.cache.get(quemAbriu);
+            const modVexy = interaction.user.id;
+
+
+            try {
+                await tickets.set(`openeds.${ticketID}.assumiu`, modVexy);
+                const response = await tickets.get(`openeds.${ticketID}.channelId`);
+                const response1 = await tickets.get(`openeds.${ticketID}.msgId`);
+                const threadTicket = await interaction.guild.channels.cache.get(response);
+
+                if (threadTicket) {
+                    const messageToEdit = await threadTicket.messages.fetch(response1);
+
+                    const button = new ButtonBuilder().setCustomId('arquivar').setLabel('Arquivar').setEmoji('1263220778040557599').setStyle(1);
+                    const button2 = new ButtonBuilder().setCustomId('deletar').setLabel('Deletar').setEmoji('1251441411266711573').setStyle(4);
+                    const button3 = new ButtonBuilder().setCustomId('notificaruser').setLabel('Notificar').setEmoji('1251441491679645698').setStyle(1);
+                    const button4 = new ButtonBuilder().setCustomId('assumiirTicket').setLabel('Atendimento assumido').setEmoji('1265035825419386911').setDisabled(true).setStyle(2);
+                    const button5 = new ButtonBuilder().setCustomId('optionUserTicket').setLabel('Opções do usuario').setEmoji('1267597699931177014').setStyle(2);
+
+                    const row = new ActionRowBuilder().addComponents(button3, button, button2);
+                    const row1 = new ActionRowBuilder().addComponents(button4, button5);
+
 
                     await messageToEdit.edit({
                         components: [row1, row],
@@ -702,7 +731,10 @@ module.exports = {
             const quemAbriu = await tickets.get(`openeds.${ticketID}.abriu`)
             const quemAssumiu = await tickets.get(`openeds.${ticketID}.assumiu`)
             const aDemes = interaction.guild.roles.cache.get(General.get(`admrole`));
+
             const userTicket = interaction.guild.members.cache.get(quemAbriu);
+=======
+
             let embedlog = new EmbedBuilder()
                 .setAuthor({ name: `| Atendimento Finalizado`, iconURL: "https://cdn.discordapp.com/emojis/1265528440543645736.webp?size=96&quality=lossless" })
                 .setDescription(`- **Atendimento:** \`${ticketID}\`\n- Aberto por: <@${quemAbriu}>\n- Fechado por: <@${responsavel}>\n- Assumido por: <@${quemAssumiu == null ? `Ninguem` : quemAssumiu}>`)
@@ -762,6 +794,171 @@ module.exports = {
                 ] })
             }
 
+
+        }
+
+            if(tickets.get(`openeds.${ticketID}.suggestion`) !== null) {
+                embedlog.addFields({
+                    name: `${EMOJI.vx15 == null ? `` : `<:${EMOJI.vx15.name}:${EMOJI.vx15.id}>`} Sugestão de Melhorias:`, value: `\`${tickets.get(`openeds.${ticketID}.suggestion`)}\``, inline: true
+                })
+            }
+
+
+        if (interaction.customId === 'optionUserTicket') {
+            const EMOJI = await obterEmoji();
+            const ticketID = interaction.channel.id;
+            const validation = await tickets.get(`openeds.${ticketID}.notifyadm`);
+
+            if (interaction.user.id !== tickets.get(`openeds.${ticketID}.abriu`)) {
+                return interaction.reply({ content: `${EMOJI.vx16 == null ? `` : `<:${EMOJI.vx16.name}:${EMOJI.vx16.id}>`} Você não tem permissão para fazer isso!`, ephemeral: true });
+            }
+
+            if (validation) {
+                interaction.reply({
+                    content: `Escolha a opção que deseja.\nLembrando que só possivel solicitar ajuda imediata uma vez.`, components: [
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`ajudaImediata`)
+                                    .setLabel('Ajuda Imediata Solicitada')
+                                    .setEmoji('1276564803762258082')
+                                    .setDisabled(true)
+                                    .setStyle(2),
+                                new ButtonBuilder()
+                                    .setCustomId(`sugestaoTicket`)
+                                    .setLabel('Sugestão de Melhorias')
+                                    .setEmoji('1276927585544044598')
+                                    .setStyle(2),
+                            ),
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`sairTicket`)
+                                    .setLabel('Sair do Atendimento')
+                                    .setEmoji('1251441490576805979')
+                                    .setStyle(2),
+                            )
+                    ], ephemeral: true
+                });
+            } else {
+                interaction.reply({
+                    content: `Escolha a opção que deseja.\nLembrando que só possivel solicitar ajuda imediata uma vez.`, components: [
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`ajudaImediata`)
+                                    .setLabel('Solicitar Ajuda Imediata')
+                                    .setEmoji('1276564803762258082')
+                                    .setStyle(2),
+                                new ButtonBuilder()
+                                    .setCustomId(`sugestaoTicket`)
+                                    .setLabel('Sugestão de Melhorias')
+                                    .setEmoji('1276927585544044598')
+                                    .setStyle(2),
+                            ),
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`sairTicket`)
+                                    .setLabel('Sair do Atendimento')
+                                    .setEmoji('1251441490576805979')
+                                    .setStyle(2),
+                            )
+                    ], ephemeral: true
+                });
+            }
+        }
+
+        if (interaction.customId === 'ajudaImediata') {
+            const EMOJI = await obterEmoji();
+            const ticketID = interaction.channel.id;
+            const userId = interaction.user.id;
+            await tickets.set(`openeds.${ticketID}.notifyadm`, true);
+            const asummido = await tickets.get(`openeds.${ticketID}.assumiu`);
+
+            if (asummido == null) {
+                const admnotify = interaction.guild.channels.cache.get(General.get(`logsticketChannel`));
+
+                admnotify.send({
+                    content: `${EMOJI.vx6 == null ? `` : `<:${EMOJI.vx6.name}:${EMOJI.vx6.id}>`} O usuário <@${userId}> solicitou atendimento imediato.`,
+                    components: [
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setURL(`https://discord.com/channels/${interaction.guild.id}/${ticketID}`)
+                                    .setLabel('Ir ate Atendimento')
+                                    .setEmoji('1251441496104636496')
+                                    .setStyle(5),
+                            )
+                    ]
+                });
+            } else {
+                const modNotify = await interaction.guild.members.cache.get(asummido);
+
+                modNotify.send({
+                    content: `${EMOJI.vx6 == null ? `` : `<:${EMOJI.vx6.name}:${EMOJI.vx6.id}>`} O usuário <@${userId}> solicitou atendimento imediato.`,
+                    components: [
+                        new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setURL(`https://discord.com/channels/${interaction.guild.id}/${ticketID}`)
+                                    .setLabel('Ir ate Atendimento')
+                                    .setEmoji('1251441496104636496')
+                                    .setStyle(5),
+                            )
+                    ]
+                });
+            }
+
+            interaction.update({ content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} O atendimento imediato foi solicitado, aguarde até que alguem da admnistração lhe atenda.`, components: [], ephemeral: true });
+        }
+
+        if (interaction.customId === 'sugestaoTicket') {
+
+            const modal = new ModalBuilder()
+                .setCustomId(`modalSuggestTicket`)
+                .setTitle('Sugestão de Melhorias');
+
+            const suggestInput = new TextInputBuilder()
+                .setCustomId('suggestTicket')
+                .setLabel('Insira sua Sugestão')
+                .setPlaceholder('Caso escreva coisas indevidas, será banido!')
+                .setMinLength(15)
+                .setStyle(TextInputStyle.Paragraph)
+                .setRequired(true)
+
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(suggestInput)
+            );
+
+            await interaction.showModal(modal);
+        }
+
+        if (interaction.isModalSubmit() && interaction.customId === "modalSuggestTicket") {
+            const sug = interaction.fields.getTextInputValue('suggestTicket');
+            const EMOJI = await obterEmoji();
+            const ticketID = interaction.channel.id;
+
+            await tickets.set(`openeds.${ticketID}.suggestion`, sug);
+
+            interaction.reply({ content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} Sua sugestão foi enviada!`, ephemeral: true });
+        }
+
+        if (interaction.customId === 'sairTicket') {
+            const EMOJI = await obterEmoji();
+            const ticketID = interaction.channel.id;
+            const thread = await interaction.guild.channels.cache.get(ticketID);
+            const userId = interaction.user.id;
+
+            if (thread) {
+                try {
+                    await thread.members.remove(userId).then(() => {
+                        interaction.update({ content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} Você foi removido do atendimento com sucesso, apenas clique em outro canal e não verá mais o canal.`, components: [], ephemeral: true });
+                    })
+                } catch (error) {
+                    console.error("Erro ao remover usuario do ticket:", error);
+                }
+            }
         }
 
         if (interaction.customId === 'optionUserTicket') {
