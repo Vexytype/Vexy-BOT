@@ -1,6 +1,7 @@
 const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const { General, BList, tickets, announce, welcomis, products, lojaInfo, EmojIs } = require("../Database/index");
 const axios = require("axios");
+const fs = require('fs');
 
 
 async function definicoes1(client, interaction) {
@@ -17,7 +18,7 @@ async function definicoes1(client, interaction) {
 **Cargo de Membro:** ${General.get(`rolemember`) == null ? `\`Não definido\`` : `<@&${General.get(`rolemember`)}>`}
                     `)
                 .setColor(General.get("oficecolor.main"))
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                 .setTimestamp()
         ],
         components: [
@@ -79,7 +80,7 @@ async function definicoes2(client, interaction) {
 **Canal de Feedbacks:** ${General.get(`VendasFeedback`) == null ? `\`Não definido\`` : `<#${General.get(`VendasFeedback`)}>`}
                     `)
                 .setColor(General.get("oficecolor.main"))
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                 .setTimestamp()
         ],
         components: [
@@ -158,56 +159,107 @@ async function definicoes2(client, interaction) {
 async function definitions(client, interaction) {
     const emojiData = await EmojIs.get(`Emojis`) || null;
 
+    if(emojiData !== null){
+        interaction.update({
+            content: ``,
+            embeds: [
+                new EmbedBuilder()
+                    .setAuthor({ name: `Definições Gerais`, iconURL: "https://cdn.discordapp.com/emojis/1265528445123694593.webp?size=96&quality=lossless" })
+                    .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- **Selecione abaixo a opção que deseja configurar.** \n`)
+                    .setColor(General.get("oficecolor.main"))
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
+                    .setTimestamp()
+            ],
+            components: [
+                new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId('config_cargos')
+                            .setLabel('Gerenciar Cargos')
+                            .setStyle(1)
+                            .setEmoji('1271659788614373399'),
+                        new ButtonBuilder()
+                            .setCustomId("config_logs")
+                            .setLabel("Gerenciar Logs")
+                            .setStyle(1)
+                            .setEmoji('1271659788614373399'),
+                    ),
+                new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`configPayments`)
+                            .setLabel("Pagamentos")
+                            .setStyle(1)
+                            .setEmoji('1273049581667745864'),
+                        new ButtonBuilder()
+                            .setCustomId("deleteEmojis")
+                            .setLabel("Excluir Emojis")
+                            .setStyle(4)
+                            .setEmoji('1276716466959417444')
+                    ),
+                new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId("voltar1")
+                            .setLabel("Voltar")
+                            .setStyle(2)
+                            .setEmoji('1265111272312016906')
+                    ),
+            ],
+            ephemeral: true
+        });
+    } else {
+        interaction.update({
+            content: ``,
+            embeds: [
+                new EmbedBuilder()
+                    .setAuthor({ name: `Definições Gerais`, iconURL: "https://cdn.discordapp.com/emojis/1265528445123694593.webp?size=96&quality=lossless" })
+                    .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- **Selecione abaixo a opção que deseja configurar.** \n`)
+                    .setColor(General.get("oficecolor.main"))
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
+                    .setTimestamp()
+            ],
+            components: [
+                new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId('config_cargos')
+                            .setLabel('Gerenciar Cargos')
+                            .setStyle(1)
+                            .setEmoji('1271659788614373399'),
+                        new ButtonBuilder()
+                            .setCustomId("config_logs")
+                            .setLabel("Gerenciar Logs")
+                            .setStyle(1)
+                            .setEmoji('1271659788614373399'),
+                    ),
+                new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`configPayments`)
+                            .setLabel("Pagamentos")
+                            .setStyle(1)
+                            .setEmoji('1273049581667745864'),
+                        new ButtonBuilder()
+                            .setCustomId("installEmojis")
+                            .setLabel("Instalar Emojis")
+                            .setStyle(2)
+                            .setEmoji('1286148928835948574')
+                    ),
+                new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId("voltar1")
+                            .setLabel("Voltar")
+                            .setStyle(2)
+                            .setEmoji('1265111272312016906')
+                    ),
+            ],
+            ephemeral: true
+        });
+    }
 
-    interaction.update({
-        content: ``,
-        embeds: [
-            new EmbedBuilder()
-                .setAuthor({ name: `Definições Gerais`, iconURL: "https://cdn.discordapp.com/emojis/1265528445123694593.webp?size=96&quality=lossless" })
-                .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- **Selecione abaixo a opção que deseja configurar.** \n`)
-                .setColor(General.get("oficecolor.main"))
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
-                .setTimestamp()
-        ],
-        components: [
-            new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId('config_cargos')
-                        .setLabel('Gerenciar Cargos')
-                        .setStyle(1)
-                        .setEmoji('1271659788614373399'),
-                    new ButtonBuilder()
-                        .setCustomId("config_logs")
-                        .setLabel("Gerenciar Logs")
-                        .setStyle(1)
-                        .setEmoji('1271659788614373399'),
-                ),
-            new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(`configPayments`)
-                        .setLabel("Pagamentos")
-                        .setStyle(1)
-                        .setEmoji('1273049581667745864'),
-                    new ButtonBuilder()
-                        .setCustomId("installEmojis")
-                        .setLabel("Instalar Emojis")
-                        .setStyle(2)
-                        .setDisabled(emojiData == null ? false : true)
-                        .setEmoji('1286148928835948574')
-                ),
-            new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId("voltar1")
-                        .setLabel("Voltar")
-                        .setStyle(2)
-                        .setEmoji('1265111272312016906')
-                ),
-        ],
-        ephemeral: true
-    });
+
 }
 
 async function configgggSales(client, interaction) {
@@ -221,7 +273,7 @@ async function configgggSales(client, interaction) {
 **Acess Token:** ${General.get(`TokenMP`) == null ? `\`\`\`Não definido\`\`\`` : `||\`\`\`${General.get(`TokenMP`)}\`\`\`||`}
 `)
         .setColor(General.get("oficecolor.main"))
-        .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+        .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
         .setTimestamp()
 
     const row = new ActionRowBuilder()
@@ -247,7 +299,7 @@ async function configgggSales(client, interaction) {
 async function panelSales(client, interaction) {
     const EMOJI = await obterEmoji();
 
-    const prodsS = await products.get(`proodutos`);
+    const prodsS = await products.get(`proodutos`) || {};
     const rendInfo1 = await lojaInfo.get(`rendimentos.pedidosAprovados`);
     const rendInfo2 = await lojaInfo.get(`rendimentos.prodEntregues`);
     const rendInfo3 = await lojaInfo.get(`rendimentos.valortotal`);
@@ -270,7 +322,7 @@ async function panelSales(client, interaction) {
             },
         )
         .setColor(General.get("oficecolor.main"))
-        .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+        .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
         .setTimestamp();
 
 
@@ -568,7 +620,7 @@ async function infoAPP(client, interaction) {
                     - Os botões abaixo contém o link do diretorio do Github com o arquivo do bot e o convite do servidor oficial do bot, onde receberemos sugestões de melhorias e iremos anunciar atualizações futuras do bot.
                     \n- Gostou do bot? então nos de uma força para continuar, dê uma estrela no diretorio do github e acesse o servidor oficial`)
                 .setColor(General.get("oficecolor.main"))
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                 .setTimestamp()
         ],
         components: [
@@ -598,6 +650,51 @@ async function infoAPP(client, interaction) {
     });
 }
 
+function loadEmojiData() {
+    try {
+        const data = fs.readFileSync('Database/emojis.json', 'utf-8');
+        return JSON.parse(data).Emojis;
+    } catch (error) {
+        console.error('Erro ao carregar o arquivo JSON:', error);
+        return null;
+    }
+}
+
+async function deleteVexyEmojis(client) {
+    const guildIID = await General.get('guildID');
+    if (!guildIID) return;
+
+    const guild = await client.guilds.fetch(guildIID);
+    if (!guild) return;
+
+    const emojiData = loadEmojiData();
+    if (!emojiData) {
+        return console.error('Erro: não foi possível carregar os dados dos emojis.');
+    }
+
+    
+    try {
+        const emojis = await guild.emojis.fetch();
+
+        const deletePromises = Object.entries(emojiData).map(async ([key, { id, name }]) => {
+            const emoji = emojis.get(id);
+            if (emoji) {
+                await emoji.delete();
+                EmojIs.delete(`Emojis.${name}`);
+            } else {
+                console.log(`Emoji não encontrado no servidor: ${name} (ID: ${id})`);
+                EmojIs.delete(`Emojis.${name}`);
+            }
+        });
+
+        await Promise.all(deletePromises);
+        const EmojisRemain = await EmojIs.get(`Emojis`);
+        if(Object.keys(EmojisRemain).length === 0) return EmojIs.delete('Emojis')
+    } catch (error) {
+        console.error('Erro ao deletar os emojis:', error);
+    }
+}
+
 module.exports = {
     definitions,
     definicoes1,
@@ -610,5 +707,6 @@ module.exports = {
     downloadFile,
     obterEmoji,
     configCoupons,
-    infoAPP
+    infoAPP,
+    deleteVexyEmojis
 }

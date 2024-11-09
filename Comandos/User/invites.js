@@ -40,8 +40,7 @@ module.exports = {
             }).join('\n');
 
             await interaction.reply({
-                content: `${EMOJI.vx12 == null ? `` : `<a:${EMOJI.vx12.name}:${EMOJI.vx12.id}>`} Convites criados por ${user.username}:\n${inviteDetails}`,
-                ephemeral: true
+                content: `${EMOJI.vx12 == null ? `` : `<a:${EMOJI.vx12.name}:${EMOJI.vx12.id}>`} Convites criados por ${user.username}:\n${inviteDetails}`
             });
 
         } catch (error) {

@@ -198,7 +198,7 @@ module.exports = {
                 let currentSelectMenuBuilder;
 
                 if (produtosData == null || Object.keys(produtosData).length == 0) {
-                    return interaction.reply({ content: `${EMOJI.vx14 == null ? `` : `<:${EMOJI.vx14.name}:${EMOJI.vx14.id}>`} Não existe nenhum campo criado para gerenciar.`, ephemeral: true });
+                    return interaction.reply({ content: `${EMOJI.vx16 == null ? `` : `<:${EMOJI.vx16.name}:${EMOJI.vx16.id}>`} Não existe nenhum campo criado para gerenciar.`, ephemeral: true });
                 }
 
                 const menuIndex = Math.floor(optionsCount / 25);
@@ -541,7 +541,7 @@ module.exports = {
             }
             if (actionButton === `AdquirirProd`) {
                 const tokenmp = await General.get('TokenMP')
-                if(!tokenmp) return interaction.reply({content:`Não é possivel realizar compras no momento, aguarde o dono configurar os pagamentos.`,ephemeral:true})
+                if (!tokenmp) return interaction.reply({ content: `Não é possivel realizar compras no momento, aguarde o dono configurar os pagamentos.`, ephemeral: true })
                 const Valor = await products.get(`proodutos.${produtin}.Campos`);
                 const primeiraChave = Object.keys(Valor)[0];
                 await openCart(produtin, primeiraChave, interaction);
@@ -553,7 +553,7 @@ module.exports = {
 
             if (actionString === `AdquirirProdSelect`) {
                 const tokenmp = await General.get('TokenMP')
-                if(!tokenmp) return interaction.reply({content:`Não é possivel realizar compras no momento, aguarde o dono configurar os pagamentos.`,ephemeral:true})
+                if (!tokenmp) return interaction.reply({ content: `Não é possivel realizar compras no momento, aguarde o dono configurar os pagamentos.`, ephemeral: true })
                 const value = interaction.values;
                 await openCart(produtin, value, interaction);
                 UpdateStock(client, produtin, interaction);
@@ -842,10 +842,10 @@ module.exports = {
                 await msg.delete();
 
                 interaction.reply({ content: `${EMOJI.vx2 == null ? `` : `<a:${EMOJI.vx2.name}:${EMOJI.vx2.id}>`} Gerando pagamento..` })
-                
+
                 await finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, interaction);
                 Channel.setName(`💱・Aguardando Pagamento・${interaction.user.id}`);
-                
+
 
             }
             if (actButun === `downloadStock`) {

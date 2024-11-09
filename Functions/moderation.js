@@ -13,7 +13,7 @@ async function moderation(client, interaction) {
                     **Sistema de Segurança:** Inclui proteção para anti-raid no servidor, identificando movimentações suspeitas, e agindo de maneira eficiente com um Captcha para cada usuario.
                     `)
                 .setColor(General.get("oficecolor.main"))
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                 .setTimestamp()
         ],
         components: [
@@ -66,7 +66,7 @@ async function automoderation(client, interaction) {
                     \n- **Mensagens Proibidas**\n - **Palavras Leves:** Receberá Timeout pelo tempo que você determinou.\n - **Palavras Ofensivas:** O usuário será expulso.
                     `)
                 .setColor(General.get("oficecolor.main"))
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                 .setTimestamp()
         ],
         components: [

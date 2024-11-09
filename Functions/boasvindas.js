@@ -10,7 +10,7 @@ async function welcome(client, interaction) {
                 .setDescription(`Olá, Sr(a) **${interaction.user.username}**\n \n- **Selecione abaixo a opção deseja configurar.** \n
 **Canal de Boas vindas:** ${welcomis.get(`welcomeMSG.chatentrada`) == null ? `\`Não definido\`` : `<#${welcomis.get(`welcomeMSG.chatentrada`)}>`}`)
                 .setColor(General.get("oficecolor.main"))
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                 .setTimestamp()
         ],
         components: [

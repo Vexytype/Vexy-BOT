@@ -37,6 +37,10 @@
     databasePath: "./Database/emojis.json"
   });
 
+  const Autos = new JsonDatabase({
+    databasePath: "./Database/auto.json"
+  });
+
   module.exports = {
     General,
     BList,
@@ -46,5 +50,6 @@
     products,
     lojaInfo,
     carrinhos,
-    EmojIs
+    EmojIs,
+    Autos
   }

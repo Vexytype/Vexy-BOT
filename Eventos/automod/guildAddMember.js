@@ -7,6 +7,8 @@ module.exports = {
     name: "guildMemberAdd",
     run: async (member, client) => {
 
+        if(member.bot) return;
+
         const serveralvo = General.get('guildID')
         if (member.guild.id !== serveralvo) {
             return;
