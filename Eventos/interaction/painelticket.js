@@ -41,7 +41,7 @@ module.exports = {
                 .setLabel(`NOME DO BLOCO`)
                 .setPlaceholder(`Insira aqui um nome, como: Suporte`)
                 .setStyle(TextInputStyle.Short)
-
+                .setMaxLength(50)
                 .setRequired(true)
 
             const newnameboteN2 = new TextInputBuilder()
@@ -50,7 +50,7 @@ module.exports = {
                 .setPlaceholder(`Insira aqui uma pré descrição, ex: "Preciso de suporte."`)
                 .setStyle(TextInputStyle.Short)
                 .setRequired(true)
-                .setMaxLength(99)
+                .setMaxLength(70)
 
             const newnameboteN4 = new TextInputBuilder()
                 .setCustomId('descBloco')
@@ -58,7 +58,7 @@ module.exports = {
                 .setPlaceholder(`Insira aqui a descrição do bloco.`)
                 .setStyle(TextInputStyle.Paragraph)
                 .setRequired(false)
-                .setMaxLength(99)
+                .setMaxLength(1024)
 
             const newnameboteN5 = new TextInputBuilder()
                 .setCustomId('bannerbloco')
@@ -100,13 +100,13 @@ module.exports = {
                 return interaction.reply({ content: `Já existe um bloco com esse nome!`, ephemeral: true });
             }
 
-            if (NOME.length > 32) {
-                return interaction.reply({ content: `O nome não pode ter mais de 32 caracteres!`, ephemeral: true });
+            if (NOME.length > 50) {
+                return interaction.reply({ content: `O nome não pode ter mais de 50 caracteres!`, ephemeral: true });
             } else {
                 tickets.set(`tickets.funcoes.${NOME}.nome`, NOME)
             }
 
-            if (PREDESC.length > 64) {
+            if (PREDESC.length > 70) {
                 return interaction.reply({ content: `A pré descrição não pode ter mais de 64 caracteres!`, ephemeral: true });
             } else {
                 tickets.set(`tickets.funcoes.${NOME}.predescricao`, PREDESC)
@@ -215,6 +215,7 @@ module.exports = {
                 .setLabel('Nome do Bloco')
                 .setPlaceholder('Insira o nome do Bloco')
                 .setStyle(TextInputStyle.Short)
+                .setMaxLength(50)
                 .setValue(funcaoExistente?.nome == undefined ? '' : funcaoExistente.nome)
                 .setRequired(false)
 
@@ -224,6 +225,7 @@ module.exports = {
                 .setPlaceholder('Insira a pré-descrição do Bloco')
                 .setStyle(TextInputStyle.Short)
                 .setValue(funcaoExistente?.predescricao == undefined ? '' : funcaoExistente.predescricao)
+                .setMaxLength(70)
                 .setRequired(false)
 
             const descricaoInput = new TextInputBuilder()
@@ -232,6 +234,7 @@ module.exports = {
                 .setPlaceholder('Insira a descrição do Bloco')
                 .setStyle(TextInputStyle.Paragraph)
                 .setValue(funcaoExistente?.descricao == undefined ? '' : funcaoExistente.descricao)
+                .setMaxLength(1024)
                 .setRequired(false)
 
             const bannerInput = new TextInputBuilder()
@@ -377,8 +380,6 @@ module.exports = {
 
         if (customId === "definiraparencia") {
 
-
-
             const modalaAA = new ModalBuilder()
                 .setCustomId('interfaceticket')
                 .setTitle(`Editar Ticket`);
@@ -400,7 +401,7 @@ module.exports = {
                 .setPlaceholder(`Insira aqui uma descrição.`)
                 .setStyle(TextInputStyle.Paragraph)
                 .setValue(dd?.description == undefined ? '' : dd.description)
-                .setMaxLength(500)
+                .setMaxLength(1024)
                 .setRequired(true)
 
 
@@ -533,7 +534,6 @@ module.exports = {
             setTimeout(() => {
                 interaction.editReply({ content: `Mensagem criada com sucesso!`, ephemeral: true });
             }, 1000)
-
         }
 
         if (interaction.isButton() && customId === 'redefinirticket') {
@@ -598,7 +598,7 @@ module.exports = {
                         .setAuthor({ name: `Notificação`, iconURL: "https://cdn.discordapp.com/emojis/1276564803762258082.webp?size=96&quality=lossless" })
                         .setDescription(`**- Atendente: <@${modVexy}>\n- A Staff do servidor "${server}" está solicitando sua presença em seu ticket aberto**\n- **Clique no botão abaixo para ser redirecionado até seu Ticket**`)
                         .setColor(General.get('oficecolor.main'))
-                        .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                        .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                         .setTimestamp()
                 ],
                 components: [
@@ -699,7 +699,7 @@ module.exports = {
                             .setAuthor({ name: `Notificação`, iconURL: "https://cdn.discordapp.com/emojis/1276564803762258082.webp?size=96&quality=lossless" })
                             .setDescription(`- O atendente <@${modVexy}> assumiu a responsabilidade do seu atendimento.\n- **Clique no botão abaixo para ser redirecionado até seu Ticket**`)
                             .setColor(General.get('oficecolor.main'))
-                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                             .setTimestamp()
                     ],
                     components: [
@@ -752,13 +752,13 @@ module.exports = {
                 const attachment = await transcript.createTranscript(interaction.channel, {
                     limit: -1,
                     returnType: 'attatchment',
-                    filename:`${interaction.channel.name}.html`,
+                    filename:`Transcript.html`,
                     saveImages:true,
                     footerText: 'Exported ${number} messages',
                     poweredBy:true
                 });
 
-                interaction.channel.delete()
+
                 if(LogTickket) {
                     LogTickket.send({ embeds: [embedlog]}).then(() => {
                         LogTickket.send({files:[attachment]});
@@ -770,7 +770,7 @@ module.exports = {
                     userTicket.send({embeds:[
                         new EmbedBuilder()
                         .setAuthor({ name: `Atendimento Finalizado`, iconURL: "https://cdn.discordapp.com/emojis/1301454740328288307.webp?size=96&quality=lossless" })
-                        .setDescription(`- Seu atendimento com Id; \`${ticketID}\`foi finalizado, abaixo foi enviado o transcript do seu atendimento`)
+                        .setDescription(`- Seu atendimento com ID \`${ticketID}\` foi finalizado, abaixo foi enviado o transcript do seu atendimento`)
                         .setColor(General.get('oficecolor.red'))
                         .setTimestamp()
                         .setFooter(
@@ -782,6 +782,7 @@ module.exports = {
                         console.log(error)
                     })
                 } 
+                interaction.channel.delete();
             } catch (error) {
                 LogGeraiss.send({ content: `${aDemes}`, embeds: [
                     new EmbedBuilder()

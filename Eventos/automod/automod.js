@@ -5,7 +5,7 @@ const axios = require("axios");
 module.exports = {
     name: 'messageCreate',
     run: async (message, client) => {
-        if (!message.guild || message.author.bot) return;
+        if (!message.guild || message.author.bot || message.author.id === General.get('owner')) return;
 
         const serveralvo = General.get('guildID')
         if (message.guild.id !== serveralvo) {

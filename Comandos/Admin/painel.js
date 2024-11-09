@@ -2,6 +2,21 @@ const { ApplicationCommandType, ButtonBuilder, ActionRowBuilder, EmbedBuilder } 
 const { General, BList, Tickesettings } = require("../../Database/index");
 const startTime = Date.now();
 
+function cumprimento() {
+    const horabrasil = new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" });
+    const hora = new Date(horabrasil).getHours();
+
+    if (hora >= 0 && hora < 6) {
+        return 'Boa madrugada';
+    } else if (hora < 12) {
+        return 'Bom dia';
+    } else if (hora < 18) {
+        return 'Boa tarde';
+    } else {
+        return 'Boa noite';
+    }
+}
+
 module.exports = {
     name: "recursos",
     description: "[STAFF] Click by to use my features",
@@ -20,7 +35,7 @@ module.exports = {
                 new EmbedBuilder()
                     .setAuthor({ name: client.user.username, iconURL: "https://cdn.discordapp.com/emojis/1265111276237881454.webp?size=96&quality=lossless" })
                     .setTitle(`**Painel Geral**`)
-                    .setDescription(`Olá, Sr(a) **${interaction.user.username}**.\n\n- Nosso sistema é completamente personalizavel,\n customize-o da maneira que preferir.`)
+                    .setDescription(`${cumprimento()}, Sr(a) **${interaction.user.username}**.\n\n- Nosso sistema é completamente personalizavel,\n customize-o da maneira que preferir.`)
                     .addFields(
                         { name: "**Current Version**", value: `\`2.0.0\``, inline: true },
                         { name: "**Ping**", value: `\`${client.ws.ping} ms\``, inline: true },
@@ -43,7 +58,6 @@ module.exports = {
                             .setLabel('Painel Ticket')
                             .setStyle(1)
                             .setEmoji('1263226742399832160'),
-
                     ),
                 new ActionRowBuilder()
                     .addComponents(
@@ -57,20 +71,25 @@ module.exports = {
                             .setLabel('Boas-vindas')
                             .setStyle(1)
                             .setEmoji('1261427087542059058'),
-                    ),
-                    new ActionRowBuilder()
-                    .addComponents(
                         new ButtonBuilder()
                             .setCustomId('personalizarapp')
                             .setLabel('Customizar')
                             .setStyle(1)
                             .setEmoji('1251441839404220417'),
+                    ),
+                new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId('automaticosOption')
+                            .setLabel('Ações Automáticas')
+                            .setStyle(2)
+                            .setEmoji('1262641711834861599'),
                         new ButtonBuilder()
                             .setCustomId('definiicao')
                             .setLabel('Definições do Bot')
                             .setStyle(2)
                             .setEmoji('1271659788614373399'),
-                            new ButtonBuilder()
+                        new ButtonBuilder()
                             .setCustomId('infoBOOT')
                             .setStyle(2)
                             .setEmoji('1262641761692549204'),

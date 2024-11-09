@@ -22,21 +22,22 @@ module.exports = {
             return;
         }
 
-        const usercontrol = await controlBlackList(member.user.id); //Chamando função da API
+        const usercontrol = await controlBlackList(member.user.id); 
+        if(!usercontrol) return;
 
-        const userVerify = usercontrol.data // Resposta da Api
+        const userVerify = usercontrol.data 
 
         const embedBlack = new EmbedBuilder()
             .setAuthor({ name: `Sistema de Moderação`, iconURL: "https://cdn.discordapp.com/emojis/1265528442133418077.webp?size=96&quality=lossless" })
             .setTitle('Entrada Negada')
-            .setColor(General.get('oficecolor.red')) //Código Hex de uma cor desejada para embed de Logs
+            .setColor(General.get('oficecolor.red')) 
             .setTimestamp()
             .setFooter({ text: `Medida de Segurança`, iconURL: "https://cdn.discordapp.com/emojis/1267381920333955112.webp?size=96&quality=lossless" })
             .setDescription(`- **O usuário <@${member.user.id}> está em nossa Blacklist Global.**\n- **Portanto o usuário foi impedido de entrar neste Servidor.**`)
 
-        const channelLogsperma = client.channels.cache.get(General.get(`logsBlacklist`)) || null; //Logs para Bans
-        const LogsGerais = client.channels.cache.get(General.get(`logsGerais`)); //Logs Gerais do Bot, para informações de erros
-        const admrole = (General.get(`admrole`)) //ID de cargo de Admnistrador do Servidor
+        const channelLogsperma = client.channels.cache.get(General.get(`logsBlacklist`)) || null; 
+        const LogsGerais = client.channels.cache.get(General.get(`logsGerais`)); 
+        const admrole = (General.get(`admrole`)) 
 
         if (userVerify.status === `banned`) {
             channelLogsperma.send({ content: `<@&${admrole}>`, embeds: [embedBlack] });

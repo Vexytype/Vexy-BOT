@@ -4,10 +4,7 @@ const { notifyStock, downloadFile, obterEmoji } = require("./definicoes")
 const Discord = require("discord.js")
 const { default: MercadoPagoConfig, Payment, Preference } = require("mercadopago");
 const acesstoken = General.get('TokenMP')
-const client = new MercadoPagoConfig({ accessToken: acesstoken });
-const payments = new Payment(client);
 const axios = require('axios');
-const moment1 = require('moment-timezone');
 const fs = require('fs');
 
 async function generatePayment(price, user, product) {
@@ -702,8 +699,7 @@ async function openCart(produtin, CampoSelect, interaction) {
         ],
     });
 
-    const iDCarrin = await thread.id
-
+    const iDCarrin = thread.id
     const row4 = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
@@ -733,8 +729,6 @@ async function openCart(produtin, CampoSelect, interaction) {
         guildid: interaction.guild.id,
         USERID: interaction.user.id
     });
-
-
 
     let quantidadeCompra = await carrinhos.get(`${interaction.user.id}.${iDCarrin}.quantidade`)
     let priceCompra = priceCampo * quantidadeCompra
@@ -768,7 +762,6 @@ async function openCart(produtin, CampoSelect, interaction) {
     if (bannerProd !== '') {
         embed.setImage(`${bannerProd}`)
     }
-
     if (iconProd !== '') {
         embed.setThumbnail(`${iconProd}`)
     }
@@ -809,19 +802,13 @@ async function openCart(produtin, CampoSelect, interaction) {
         .addComponents(button4, button5, button6);
 
     let msgbuyEmbed = await thread.send({ components: [row1, row2], embeds: [embed], content: `${interaction.user}` });
-    const messageID = msgbuyEmbed.id;
-    await carrinhos.set(`${interaction.user.id}.${iDCarrin}.messageID`, messageID);
-
+    await carrinhos.set(`${interaction.user.id}.${iDCarrin}.messageID`, msgbuyEmbed.id);
 }
 
 async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, interaction) {
     const Valor2 = await products.get(`proodutos.${produtin}.Campos.${CampoSelect}`);
     const Valor3 = await carrinhos.get(`${userInteract}.${iDCarrin}`);
-    const priceFinaly = Valor3.valor
-    const itemFinaly = Valor3.itemBuy
-    const QuantyFinaly = Valor3.quantidade
     let EstoqueProd = Valor2.stock
-
 
     const Channel = interaction.channel
     const userbuy = interaction.guild.members.cache.get(userInteract);
@@ -829,17 +816,15 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
     const RoleCostumer = General.get('costumeRrole') || null;
     const item = products.get(`proodutos.${produtin}.messageid`)
 
-    const payment = await generatePayment(priceFinaly, userInteract, itemFinaly, acesstoken);
-
+    const payment = await generatePayment(Valor3.valor, userInteract, Valor3.itemBuy, acesstoken);
     if (payment && payment.status === 'error') {
         console.log('Erro ao gerar pagamento com Mercado Pago', { error: payment.message });
-        return Channel.send(`Erro ao gerar o pagamento: ${payment.message || 'Tente novamente mais tarde.'}`);
+        return Channel.send(`Erro ao gerar o pagamento: ${payment.message || 'Tente novamente'}`);
     }
 
     const buffer = Buffer.from(payment.point_of_interaction.transaction_data.qr_code_base64, "base64");
     const attachment = new AttachmentBuilder(buffer, { name: "payment.png" });
     const pixCode = payment.point_of_interaction.transaction_data.qr_code;
-
     carrinhos.set(`${interaction.user.id}.${iDCarrin}.idPay`, payment.id);
 
     const Finalyrow = new ActionRowBuilder().addComponents(
@@ -894,7 +879,6 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
     });
 
     const vendasADM = interaction.guild.channels.cache.get(General.get('logsVendasADM')) || null;
-
     const Avisorow = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setURL(`https://discord.com/channels/${interaction.guild.id}/${iDCarrin}`)
@@ -902,7 +886,6 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
             .setEmoji('1297811409132064768')
             .setStyle(5)
     )
-
 
     if (userbuy) {
         userbuy.send({
@@ -915,10 +898,10 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                             name: `${EMOJI.vx5 == null ? `` : `<:${EMOJI.vx5.name}:${EMOJI.vx5.id}>`} ID do Pedido`, value: `\`${iDCarrin}\``, inline: true
                         },
                         {
-                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor`, value: `\`R$ ${Number(priceFinaly).toFixed(2)}\``, inline: true
+                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor`, value: `\`R$ ${Number(Valor3.valor).toFixed(2)}\``, inline: true
                         },
                         {
-                            name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${QuantyFinaly}\` - ${itemFinaly}`, inline: false
+                            name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${Valor3.quantidade}\` - ${Valor3.itemBuy}`, inline: false
                         },
 
                     )
@@ -941,10 +924,10 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                             name: `${EMOJI.vx5 == null ? `` : `<:${EMOJI.vx5.name}:${EMOJI.vx5.id}>`} Id do Pedido:`, value: `\`${iDCarrin}\``, inline: true
                         },
                         {
-                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor:`, value: `\`R$ ${Number(priceFinaly).toFixed(2)}\``, inline: true
+                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor:`, value: `\`R$ ${Number(Valor3.valor).toFixed(2)}\``, inline: true
                         },
                         {
-                            name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${QuantyFinaly}\` - ${itemFinaly}`, inline: false
+                            name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${Valor3.quantidade}\` - ${Valor3.itemBuy}`, inline: false
                         },
 
                     )
@@ -976,16 +959,13 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
             }
 
             if (pays.data.status === "cancelled") return clearInterval(int);
-
             if (pays.data.status !== "approved") return;
-
             collector.stop();
             clearInterval(int);
             const logEntrega = interaction.guild.channels.cache.get(General.get('logsVendasPUB')) || null;
             const CHFeedback = interaction.guild.channels.cache.get(General.get('VendasFeedback')) || null;
             await Channel.setName(`✅・Pagamento Aprovado・${userInteract}`);
-            const removed = EstoqueProd.splice(0, Number(QuantyFinaly)).join("\n");
-
+            const removed = EstoqueProd.splice(0, Number(Valor3.quantidade)).join("\n");
             await carrinhos.set(`${userInteract}.${iDCarrin}.StatusBuy`, 'approved');
 
             const infoRebuyC = item[0].channelid
@@ -1009,10 +989,10 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                                 name: `${EMOJI.vx5 == null ? `` : `<:${EMOJI.vx5.name}:${EMOJI.vx5.id}>`} ID do Pedido:`, value: `\`${iDCarrin}\``, inline: true
                             },
                             {
-                                name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor:`, value: `\`R$ ${Number(priceFinaly).toFixed(2)}\``, inline: true
+                                name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor:`, value: `\`R$ ${Number(Valor3.valor).toFixed(2)}\``, inline: true
                             },
                             {
-                                name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${QuantyFinaly}\` - ${itemFinaly}`, inline: false
+                                name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${Valor3.quantidade}\` - ${Valor3.itemBuy}`, inline: false
                             },
                         )
                         .setThumbnail(userbuy.displayAvatarURL())
@@ -1033,10 +1013,10 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                                 name: `${EMOJI.vx5 == null ? `` : `<:${EMOJI.vx5.name}:${EMOJI.vx5.id}>`} ID do Pedido:`, value: `\`${iDCarrin}\``, inline: true
                             },
                             {
-                                name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor:`, value: `\`R$ ${Number(priceFinaly).toFixed(2)}\``, inline: true
+                                name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor:`, value: `\`R$ ${Number(Valor3.valor).toFixed(2)}\``, inline: true
                             },
                             {
-                                name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${QuantyFinaly}\` - ${itemFinaly}`, inline: false
+                                name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${Valor3.quantidade}\` - ${Valor3.itemBuy}`, inline: false
                             },
                         )
                         .setThumbnail(userbuy.displayAvatarURL())
@@ -1052,7 +1032,7 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                 msg.delete();
             });
 
-            if (QuantyFinaly <= 20) {
+            if (Valor3.quantidade <= 20) {
 
                 const embedEntrega = new EmbedBuilder()
                     .setAuthor({ name: `Entrega do Produto`, iconURL: "https://cdn.discordapp.com/emojis/1290144734529982474.webp?size=96&quality=lossless" })
@@ -1081,10 +1061,10 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                             .setDescription(`${EMOJI.vx6 == null ? `` : `<:${EMOJI.vx6.name}:${EMOJI.vx6.id}>`} Olá <@${userInteract}>\nSeu pedido com ID \`${iDCarrin}\` foi aprovado e seu produto se encontra abaixo.`)
                             .addFields(
                                 {
-                                    name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor Pago`, value: `\`R$ ${Number(priceFinaly).toFixed(2)}\``, inline: false
+                                    name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor Pago`, value: `\`R$ ${Number(Valor3.valor).toFixed(2)}\``, inline: false
                                 },
                                 {
-                                    name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${QuantyFinaly}\` - ${itemFinaly}`, inline: false
+                                    name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${Valor3.quantidade}\` - ${Valor3.itemBuy}`, inline: false
                                 },
 
                             )
@@ -1116,10 +1096,10 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                                         name: `${EMOJI.vx5 == null ? `` : `<:${EMOJI.vx5.name}:${EMOJI.vx5.id}>`} ID do Pedido`, value: `\`${iDCarrin}\``, inline: false
                                     },
                                     {
-                                        name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor:`, value: `\`R$ ${Number(priceFinaly).toFixed(2)}\``, inline: false
+                                        name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor:`, value: `\`R$ ${Number(Valor3.valor).toFixed(2)}\``, inline: false
                                     },
                                     {
-                                        name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${QuantyFinaly}\` - ${itemFinaly}`, inline: false
+                                        name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${Valor3.quantidade}\` - ${Valor3.itemBuy}`, inline: false
                                     },
 
                                 )
@@ -1161,10 +1141,10 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                                 .setDescription(`${EMOJI.vx6 == null ? `` : `<:${EMOJI.vx6.name}:${EMOJI.vx6.id}>`} Olá <@${userInteract}>\nSeu pedido com ID \`${iDCarrin}\` foi aprovado e seu produto se encontra abaixo.`)
                                 .addFields(
                                     {
-                                        name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor Pago`, value: `\`R$ ${Number(priceFinaly).toFixed(2)}\``, inline: false
+                                        name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor Pago`, value: `\`R$ ${Number(Valor3.valor).toFixed(2)}\``, inline: false
                                     },
                                     {
-                                        name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${QuantyFinaly}\` - ${itemFinaly}`, inline: false
+                                        name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${Valor3.quantidade}\` - ${Valor3.itemBuy}`, inline: false
                                     },
 
                                 )
@@ -1197,10 +1177,10 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                                             name: `${EMOJI.vx5 == null ? `` : `<:${EMOJI.vx5.name}:${EMOJI.vx5.id}>`} ID do Pedido`, value: `\`${iDCarrin}\``, inline: false
                                         },
                                         {
-                                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor:`, value: `\`R$ ${Number(priceFinaly).toFixed(2)}\``, inline: false
+                                            name: `${EMOJI.vx11 == null ? `` : `<:${EMOJI.vx11.name}:${EMOJI.vx11.id}>`} Valor:`, value: `\`R$ ${Number(Valor3.valor).toFixed(2)}\``, inline: false
                                         },
                                         {
-                                            name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${QuantyFinaly}\` - ${itemFinaly}`, inline: false
+                                            name: `${EMOJI.vx7 == null ? `` : `<:${EMOJI.vx7.name}:${EMOJI.vx7.id}>`} Informações do Carrinho`, value: `\`x${Valor3.quantidade}\` - ${Valor3.itemBuy}`, inline: false
                                         },
 
                                     )
@@ -1220,14 +1200,17 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
 
             }
 
-            lojaInfo.add("rendimentos.pedidosAprovados", 1);
-            lojaInfo.add("rendimentos.prodEntregues", Number(QuantyFinaly));
-            lojaInfo.add(`rendimentos.valortotal`, Number(priceFinaly).toFixed(2));
-            products.add(`proodutos.${produtin}.Campos.${CampoSelect}.estatisticas.vendas`, 1);
-            products.add(`proodutos.${produtin}.Campos.${CampoSelect}.estatisticas.vendidos`, Number(QuantyFinaly));
-            products.add(`proodutos.${produtin}.Campos.${CampoSelect}.estatisticas.rendeu`, Number(priceFinaly).toFixed(2));
-            products.set(`proodutos.${produtin}.Campos.${CampoSelect}.stock`, EstoqueProd);
-
+            try {
+                lojaInfo.add("rendimentos.pedidosAprovados", 1);
+                lojaInfo.add("rendimentos.prodEntregues", Number(Valor3.quantidade));
+                lojaInfo.add(`rendimentos.valortotal`, Number(Valor3.valor).toFixed(2));
+                products.add(`proodutos.${produtin}.Campos.${CampoSelect}.estatisticas.vendas`, 1);
+                products.add(`proodutos.${produtin}.Campos.${CampoSelect}.estatisticas.vendidos`, Number(Valor3.quantidade));
+                products.add(`proodutos.${produtin}.Campos.${CampoSelect}.estatisticas.rendeu`, Number(Valor3.valor).toFixed(2));
+                products.set(`proodutos.${produtin}.Campos.${CampoSelect}.stock`, EstoqueProd);
+            } catch (error) {
+                console.log(`Erro ao atualizar estatisticas: ${error}`)
+            }
             if (RoleCostumer !== null) {
                 if (!interaction.member.roles.cache.has(RoleCostumer)) {
                     try {
@@ -1255,7 +1238,6 @@ async function finalyPay(produtin, CampoSelect, userInteract, iDCarrin, client, 
                     }
                 }
             }
-
             UpdateStock(client, produtin, interaction);
 
             interaction.channel.send({ content: `${EMOJI.vx2 == null ? `` : `<a:${EMOJI.vx2.name}:${EMOJI.vx2.id}>`} Este carrinho será deletado em 60 segundos!` });

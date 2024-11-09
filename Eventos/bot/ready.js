@@ -11,9 +11,9 @@ async function deleteCarts(client) {
   const tempoExpiracao = 10 * 60 * 1000;
 
   const guildIID = await General.get('guildID')
+  if(!guildIID) return;
   const guild = await client.guilds.fetch(guildIID);
-  if (!guildIID || !guild) return;
-
+  if (!guild) return;
 
   const usuarios = carrinhos.all();
 
@@ -67,7 +67,6 @@ async function deleteCarts(client) {
             });
 
           }
-
           if (LogVenda) {
             LogVenda.send({
               content: ``, embeds: [
@@ -94,10 +93,8 @@ async function deleteCarts(client) {
               ], components: []
             });
           }
-
-          if (channel) {
-            channel.delete();
-          }
+          
+          if (channel) channel.delete();
           carrinhos.delete(`${userID}.${cartID}`);
         } catch (error) {
           console.error(`Erro:`, error);
@@ -124,7 +121,6 @@ module.exports = {
     setInterval(async () => { deleteCarts(client) }, 5000);
     setInterval(async () => { Antifraude(client) }, 24 * 60 * 1000);
 
-    console.clear();
     console.log(colors.green('[STATUS]') + " " + client.user.username + " acabou de iniciar.");
     console.log(colors.green("[STATUS]") + " Online em " + client.guilds.cache.size + " servidores");
     console.log(" ");

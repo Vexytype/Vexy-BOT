@@ -9,7 +9,7 @@ async function BBlackList(client, interaction) {
                 .setAuthor({ name: `Gerenciamento da Blacklist`, iconURL: "https://cdn.discordapp.com/emojis/1265531971962929172.png?size=2048" })
                 .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- **Selecione abaixo a opção que deseja!**`)
                 .setColor(General.get("oficecolor.main"))
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                 .setTimestamp()
         ],
         components: [

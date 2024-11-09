@@ -9,7 +9,7 @@ async function personalizaar(client, interaction) {
                 .setAuthor({ name: `Painel de Personalização`, iconURL: 'https://cdn.discordapp.com/emojis/1265111274132344883.webp?size=96&quality=lossless' })
                 .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n **Personalize sua aplicação atráves das opções abaixo.** \n\n`)
                 .setColor(General.get("oficecolor.main"))
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                 .setTimestamp()
         ],
         components: [

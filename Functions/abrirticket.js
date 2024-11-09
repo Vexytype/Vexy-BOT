@@ -28,7 +28,7 @@ async function abrirTicket(interaction, valor) {
                     .setStyle(5)
             )
 
-        interaction.editReply({ content: `Você já possuí um ticket aberto`, components: [row4] })
+        interaction.editReply({ content: `${EMOJI.vx4 == null ? `` : `<:${EMOJI.vx4.name}:${EMOJI.vx4.id}>`} Você já possuí um ticket aberto`, components: [row4] })
         return
     }
 

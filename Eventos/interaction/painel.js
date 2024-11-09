@@ -1,9 +1,9 @@
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ChannelSelectMenuBuilder, ChannelType, RoleSelectMenuBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, InteractionType } = require("discord.js");
 const Discord = require("discord.js")
-const { General, BList, tickets, announce, welcomis, products, lojaInfo, EmojIs } = require("../../Database/index");
+const { General, BList, tickets, announce, welcomis, products, lojaInfo, EmojIs, Autos } = require("../../Database/index");
 const { token } = require("../../token.json")
-const { panel } = require("../../Functions/painel");
-const { definitions, definicoes1, definicoes2, configgggSales, panelSales, GerenciarProduto, GerenciarCampoProd, obterEmoji, infoAPP } = require("../../Functions/definicoes")
+const { panel, AutoAction } = require("../../Functions/painel");
+const { definitions, definicoes1, definicoes2, configgggSales, panelSales, GerenciarProduto, GerenciarCampoProd, obterEmoji, infoAPP, deleteVexyEmojis } = require("../../Functions/definicoes")
 const { personalizaar } = require("../../Functions/personalizar")
 const { moderation, automoderation } = require("../../Functions/moderation")
 const { welcome } = require("../../Functions/boasvindas")
@@ -25,12 +25,13 @@ module.exports = {
 
         if (inteButton) {
 
-            if (customId === "infoBOOT"){
+            if (customId === "infoBOOT") {
                 await infoAPP(client, interaction);
             }
-            if (customId === "installEmojis"){
+            if (customId === "installEmojis") {
+                if(EmojIs.get('Emojis') !== null) return interaction.reply({ content: "Os emojis já foram instalados.", ephemeral: true });
                 await interaction.reply({ content: "Aguarde..", ephemeral: true });
-                
+
                 const emojiArray = [
                     "https://cdn.discordapp.com/emojis/1259069283124903988.webp?size=96&quality=lossless",
                     "https://cdn.discordapp.com/emojis/1296709613235863613.gif?size=96&quality=lossless",
@@ -50,19 +51,19 @@ module.exports = {
                     "https://cdn.discordapp.com/emojis/1297714662489591870.webp?size=96&quality=lossless",
                     "https://cdn.discordapp.com/emojis/1301452504592154645.webp?size=96&quality=lossless",
                 ];
-        
+
                 try {
                     await Promise.all(emojiArray.map(async (url, index) => {
                         const emojiName = `vx${index + 1}`;
                         const createdEmoji = await interaction.guild.emojis.create({ attachment: url, name: emojiName });
                         await EmojIs.set(`Emojis.${emojiName}`, {
-                             id: createdEmoji.id, 
-                             name: createdEmoji.name 
-                            });
+                            id: createdEmoji.id,
+                            name: createdEmoji.name
+                        });
                     }));
-        
+
                     const EMOJI = await obterEmoji();
-        
+
                     await interaction.editReply({ content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} Emojis adicionados com sucesso neste servidor! Lembre-se de reiniciar o bot para garantir que as alterações entrem em vigor.`, ephemeral: true });
                 } catch (error) {
                     console.error("Erro ao criar emojis:", error);
@@ -71,6 +72,9 @@ module.exports = {
             }
             if (customId === "voltarcfgVendas") {
                 panelSales(client, interaction);
+            }
+            if (customId === "automaticosOption") {
+                AutoAction(client, interaction);
             }
             if (customId === "personalizarapp") {
                 personalizaar(client, interaction);
@@ -240,7 +244,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- Selecione abaixo o Canal que deseja setar para **Logs De ticket**. \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -268,7 +272,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n - Selecione abaixo o Canal que deseja setar para **Logs De Entradas**. \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -296,7 +300,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- Selecione abaixo o Canal que deseja setar para **Logs De Saidas**. \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -324,7 +328,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- Selecione abaixo o Canal que deseja setar para **Logs De Bans**. \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -352,7 +356,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- Selecione abaixo o Canal que deseja setar para **Logs Da Blacklist**. \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -380,7 +384,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- Selecione abaixo o Canal que deseja setar para **Logs Gerais do Sistema.** \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -408,7 +412,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- Selecione abaixo o Canal que deseja setar para **Logs De Castigos** \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -436,7 +440,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- Selecione abaixo o Canal que deseja setar para **Logs De Vendas Admnistrador** \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -464,7 +468,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- Selecione abaixo o Canal que deseja setar para **Logs De Entregas** \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -492,7 +496,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- Selecione abaixo o Canal que deseja setar para **Feedbacks** \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -522,7 +526,7 @@ module.exports = {
                             .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                             .setDescription(`Olá Sr(a)**${interaction.user.username}**\n \n- Selecione abaixo o cargo para **Admnistradores**. \n`)
                             .setColor(General.get("oficecolor.main"))
-                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                             .setTimestamp()
                     ],
                     components: [
@@ -547,7 +551,7 @@ module.exports = {
                             .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                             .setDescription(`Olá Sr(a)**${interaction.user.username}**\n \n- Selecione abaixo o cargo para o **Suporte**. \n`)
                             .setColor(General.get("oficecolor.main"))
-                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                             .setTimestamp()
                     ],
                     components: [
@@ -572,7 +576,7 @@ module.exports = {
                             .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                             .setDescription(`Olá Sr(a)**${interaction.user.username}**\n \n- Selecione abaixo o cargo para **Clientes**. \n`)
                             .setColor(General.get("oficecolor.main"))
-                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                             .setTimestamp()
                     ],
                     components: [
@@ -597,7 +601,7 @@ module.exports = {
                             .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                             .setDescription(`Olá Sr(a)**${interaction.user.username}**\n \n- Selecione abaixo o cargo para **Membros**. \n`)
                             .setColor(General.get("oficecolor.main"))
-                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                             .setTimestamp()
                     ],
                     components: [
@@ -620,7 +624,7 @@ module.exports = {
                     .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                     .setDescription(`Olá Sr(a) **${interaction.user.username}**\n \n- Selecione abaixo o Canal que deseja setar como **Canal de Entradas**. \n\n`)
                     .setColor(General.get("oficecolor.main"))
-                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                    .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                     .setTimestamp();
 
                 const components = [
@@ -659,7 +663,7 @@ module.exports = {
                 const newnameboteN2 = new TextInputBuilder()
                     .setCustomId('descBoausvindas')
                     .setLabel(`Descrição`)
-                    .setPlaceholder(`Insira uma descrição`)
+                    .setPlaceholder(`Olá {member}, seja bem-vinda á {guildname}.`)
                     .setStyle(TextInputStyle.Paragraph)
                     .setRequired(true)
 
@@ -796,7 +800,7 @@ module.exports = {
                             .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
                             .setDescription(`Olá Sr(a)**${interaction.user.username}**\n \n- **Selecione abaixo o cargo que deseja setar como Cargo Automático ao entrar.** \n`)
                             .setColor(General.get("oficecolor.main"))
-                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                            .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
                             .setTimestamp()
                     ],
                     components: [
@@ -1035,14 +1039,14 @@ module.exports = {
                     General.set(`oficecolor.main`, mainColouur)
                 }
 
-                await interaction.reply({ content: `Cor Principal Alterada com Sucesso`, ephemeral: true });
+                personalizaar(client, interaction);
             }
             if (customId === 'nomebotModal') {
                 const botName = interaction.fields.getTextInputValue('botName');
 
                 try {
                     await client.user.setUsername(botName);
-                    await interaction.reply({ content: `Nome do APP Alterado com Sucesso`, ephemeral: true });
+                    personalizaar(client, interaction);
                 } catch (error) {
                     if (error.code === 50035 && error.rawError?.errors?.username?._errors[0]?.code === 'USERNAME_TOO_MANY_USERS') {
                         await interaction.reply({ content: `Muitas aplicações já possui este nome de usuário.`, ephemeral: true });
@@ -1056,7 +1060,7 @@ module.exports = {
 
                 try {
                     await client.user.setAvatar(botAvatar);
-                    await interaction.reply({ content: `Avatar do APP Alterado Com Sucesso`, ephemeral: true });
+                    personalizaar(client, interaction);
                 } catch (error) {
                     await interaction.reply({ content: `Erro ao atualizar o Avatar do APP`, ephemeral: true });
                 }
@@ -1066,12 +1070,11 @@ module.exports = {
 
                 try {
                     await client.user.setBanner(botBanner);
-                    await interaction.reply({ content: `Banner do APP Alterado Com Sucesso`, ephemeral: true });
+                    personalizaar(client, interaction);
                 } catch (error) {
                     await interaction.reply({ content: `Erro ao atualizar o Banner do APP`, ephemeral: true });
                 }
             }
-
             if (customId === 'mainDescModal') {
                 const botDDDDEsc = interaction.fields.getTextInputValue('DeesscColor');
 
@@ -1087,12 +1090,11 @@ module.exports = {
                             'Content-Type': 'application/json',
                         },
                     });
-                    interaction.reply({ content: `Descrição atualizada com sucesso!`, ephemeral: true })
+                    definitions(client, interaction);
                 } catch (error) {
                     console.log(error)
                 }
             }
-
             if (customId === 'statusbotModal') {
                 const botActivity = interaction.fields.getTextInputValue('botActivity');
 
@@ -1364,7 +1366,6 @@ module.exports = {
                     .setCustomId('msgsProibi')
                     .setLabel('Palavras Leves')
                     .setPlaceholder(`Digite separado por vírgulas\nEx: Divulgação, Xingamentos...\nDigite "off" Para desligar`)
-                    .setValue(val?.title == undefined ? '' : val.title)
                     .setStyle(2)
                     .setRequired(true)
 
@@ -1406,28 +1407,27 @@ module.exports = {
             if (customId === "diasAutomod") {
                 const dias = interaction.fields.getTextInputValue('diasProibi')
 
-                if (isNaN(dias) && dias !== "off") return interaction.reply({ content: `Insira apenas numeros!`, ephemeral: true });
+                if (isNaN(dias) || dias !== "off") return interaction.reply({ content: `Insira apenas numeros!`, ephemeral: true });
 
                 await General.set("automod.antifake.dias", dias === "off" ? null : Number(dias).toFixed(2));
-                interaction.reply({ content: `Dia(s) Minimos para entrar foi definido para \`${dias}\``, ephemeral: true });
+                interaction.reply({ content: `Dia(s) Minimos para entrar no servidor foi definido para \`${dias}\``, ephemeral: true });
             }
             if (customId === "msgsAutomod") {
                 const leves = interaction.fields.getTextInputValue('msgsProibi')
                 const ofensivas = interaction.fields.getTextInputValue('msgs2Proibi')
                 const tempo = interaction.fields.getTextInputValue('timeCastigo')
 
-                if (isNaN(tempo) && tempo !== "off") return interaction.reply({ content: `Insira apenas numeros no tempo de timeout!`, ephemeral: true });
+                if (isNaN(tempo) || tempo !== "off") return interaction.reply({ content: `Insira apenas numeros no tempo de timeout!`, ephemeral: true });
 
                 await General.set("automod.palavras", {
                     "leves": leves === "off" ? [] : leves.split(", "),
                     "ofensivas": ofensivas === "off" ? [] : ofensivas.split(", "),
-                    "tempo": tempo === "off" ? null : Number(tempo).toFixed(2)
+                    "tempo": tempo === "off" || leves === "off" ? null : Number(tempo).toFixed(2)
                 });
                 interaction.reply({ content: `Configurações de mensagens proibida foi definida com sucesso!`, ephemeral: true });
             }
         }
 
-        //config payemnts -------------------------------------]
         if (inteButton) {
             if (customId === "configPayments") {
                 configgggSales(client, interaction);
@@ -1435,7 +1435,7 @@ module.exports = {
             if (customId === "voltarDefinitionsSales") {
                 configgggSales(client, interaction);
             }
-            if (customId == "seTokenMP") {
+            if (customId === "seTokenMP") {
 
                 const modal = new ModalBuilder()
                     .setCustomId('modalTokenMP')
@@ -1451,10 +1451,10 @@ module.exports = {
                 modal.addComponents(row)
                 await interaction.showModal(modal)
             }
-            if (customId == "gerenciarerVEndaa") {
+            if (customId === "gerenciarerVEndaa") {
                 await panelSales(client, interaction)
             }
-            if (customId == "criarPProdct") {
+            if (customId === "criarPProdct") {
 
                 const modalaAA = new ModalBuilder()
                     .setCustomId('modaladdProdct')
@@ -1500,7 +1500,7 @@ module.exports = {
                 await interaction.showModal(modalaAA);
 
             }
-            if (customId == "delletePProdct") {
+            if (customId === "delletePProdct") {
 
                 const produtosData = products.get("proodutos");
                 const allSelectMenus = [];
@@ -1564,10 +1564,10 @@ module.exports = {
                     content: `Selecione o produto que deseja deletar.`,
                 });
             }
-            if (customId == "protecaoSystem") {
+            if (customId === "protecaoSystem") {
                 const protectSystem = await General.get(`SystemProtect`);
 
-                if(protectSystem == false){
+                if (protectSystem == false) {
                     await General.set(`SystemProtect`, true);
                 } else {
                     await General.set(`SystemProtect`, false);
@@ -1575,24 +1575,135 @@ module.exports = {
 
                 await moderation(client, interaction);
             }
+            if (customId === `autolockSettings`) {
+                const modala = new ModalBuilder()
+                    .setCustomId('modalautolock')
+                    .setTitle(`Configurar Auto-Lock`);
+
+                const newnameboteN = new TextInputBuilder()
+                    .setCustomId('inputhoraAbertura')
+                    .setLabel(`Horário de Abertura`)
+                    .setPlaceholder(`Exemplo: 15:30`)
+                    .setStyle(TextInputStyle.Short)
+                    .setMaxLength(5)
+                    .setRequired(true)
+
+                const newnameboteN1 = new TextInputBuilder()
+                    .setCustomId('inputhoraFechamento')
+                    .setLabel(`Horário de Fechamento`)
+                    .setPlaceholder(`Exemplo: 18:30`)
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(true)
+                    .setMaxLength(5)
+
+                const newnameboteN2 = new TextInputBuilder()
+                    .setCustomId('inputcanaisAutolock')
+                    .setLabel(`Canais Afetados`)
+                    .setPlaceholder(`Insira o id dos canais linha por linha`)
+                    .setStyle(TextInputStyle.Paragraph)
+                    .setRequired(true)
+
+
+                const Row = new ActionRowBuilder().addComponents(newnameboteN);
+                const Row1 = new ActionRowBuilder().addComponents(newnameboteN1);
+                const Row2 = new ActionRowBuilder().addComponents(newnameboteN2);
+
+                modala.addComponents(Row, Row1, Row2);
+                await interaction.showModal(modala);
+            }
+            if (customId == 'autoMsgs') {
+                const modala = new ModalBuilder()
+                    .setCustomId('modalMessagauto')
+                    .setTitle(`Configurar Mensagem Automática`);
+
+                const newnameboteN = new TextInputBuilder()
+                    .setCustomId('inputlabelButton')
+                    .setLabel(`Nome do Botão`)
+                    .setPlaceholder(`Insira o nome do botão`)
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false)
+
+                const newnameboteN1 = new TextInputBuilder()
+                    .setCustomId('inputcanalMsgauto')
+                    .setLabel(`ID do Canal`)
+                    .setPlaceholder(`Insira o ID do canal que deseja`)
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(true)
+
+                const newnameboteN2 = new TextInputBuilder()
+                    .setCustomId('inputMsgauto')
+                    .setLabel(`Insira sua mensagem`)
+                    .setPlaceholder(`Insira sua mensagem automática`)
+                    .setStyle(TextInputStyle.Paragraph)
+                    .setRequired(true)
+
+                const newnameboteN3 = new TextInputBuilder()
+                    .setCustomId('inputLinkbutton')
+                    .setLabel(`URl do Botão`)
+                    .setPlaceholder(`Caso queira um botão, coloque a URL caso contrário deixe vazio.`)
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false)
+
+                const newnameboteN4 = new TextInputBuilder()
+                    .setCustomId('inputemojibuttonAuto')
+                    .setLabel(`Emoji do Botão`)
+                    .setPlaceholder(`insira o ID do emoji, caso contrário será definido o padrão.`)
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false)
+
+
+                const Row = new ActionRowBuilder().addComponents(newnameboteN);
+                const Row1 = new ActionRowBuilder().addComponents(newnameboteN1);
+                const Row2 = new ActionRowBuilder().addComponents(newnameboteN2);
+                const Row3 = new ActionRowBuilder().addComponents(newnameboteN3);
+                const row4 = new ActionRowBuilder().addComponents(newnameboteN4);
+
+                modala.addComponents(Row1, Row2, Row, Row3, row4);
+                await interaction.showModal(modala);
+            }
+            if (customId == 'repostSellAuto') {
+                const modala = new ModalBuilder()
+                    .setCustomId('modalTimeRepost')
+                    .setTitle(`Configuração Repostagem Automática`);
+
+                const newnameboteN = new TextInputBuilder()
+                    .setCustomId('inputTimeRepostAnns')
+                    .setLabel(`Horário de Repostagem`)
+                    .setPlaceholder(`Ex: 19:35`)
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(true)
+
+
+                const Row = new ActionRowBuilder().addComponents(newnameboteN);
+
+                modala.addComponents(Row);
+                await interaction.showModal(modala);
+            }
+            if (customId === 'deleteEmojis') {
+                if(EmojIs.get('Emojis') == null) return interaction.reply({content:`Os emojis já foram excluidos.`,ephemeral:true});
+                await interaction.reply({content:`aguarde..`,ephemeral:true});
+            
+                await deleteVexyEmojis(client);
+                await interaction.editReply({ content: 'Emojis deletados com sucesso.', ephemeral: true });
+            }
         }
-        if(strings){
+        if (strings) {
             const [action, produtin] = interaction.customId.split('_');
             if (interaction.customId.startsWith('removeproduto_')) {
                 let produtin = interaction.values[0];
                 products.delete(`proodutos.${produtin}`);
                 await panelSales(client, interaction);
-    
+
             }
             if (interaction.customId.startsWith('configproduto_')) {
                 let produtin = interaction.values[0]
                 await GerenciarProduto(produtin, interaction, client);
             }
-            if (action ==='configCampoproduto') {
+            if (action === 'configCampoproduto') {
                 let nameE = interaction.values[0]
                 await GerenciarCampoProd(produtin, nameE, interaction, client);
             }
-            if (action ==='removeCampoproduto') {
+            if (action === 'removeCampoproduto') {
                 let campu = interaction.values[0]
                 products.delete(`proodutos.${produtin}.Campos.${campu}`);
                 await GerenciarProduto(produtin, interaction, client);
@@ -1634,6 +1745,125 @@ module.exports = {
                 });
 
                 await GerenciarProduto(nome, interaction, client);
+            }
+            if (customId == 'modalautolock') {
+                let abertura = interaction.fields.getTextInputValue('inputhoraAbertura');
+                let fechamento = interaction.fields.getTextInputValue('inputhoraFechamento');
+                let canaisAfetados = interaction.fields.getTextInputValue('inputcanaisAutolock');
+
+                const EMOJI = await obterEmoji();
+                const guildRes = interaction.guild.id;
+
+                function isValidTime(time) {
+                    const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+                    return regex.test(time);
+                }
+
+                if (!isValidTime(abertura) || !isValidTime(fechamento)) {
+                    return interaction.reply({
+                        content: `${EMOJI.vx16 == null ? `` : `<:${EMOJI.vx16.name}:${EMOJI.vx16.id}>`} Os horários de abertura e fechamento devem estar no formato correto (HH:MM) e entre 00:00 e 23:59.`,
+                        ephemeral: true
+                    });
+                }
+
+                const array = canaisAfetados.split("\n").map(line => line.trim());
+                let channelss = [];
+                for (const conts of array) {
+                    if (conts) {
+                        channelss.push(conts);
+                    }
+                }
+
+                Autos.set(`autolock.${guildRes}`, {
+                    abrir: abertura,
+                    fechar: fechamento,
+                    channels: channelss,
+                    serverid: guildRes
+                });
+
+                interaction.reply({
+                    content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} Sistema de auto-lock foi devidamente configurado.`,
+                    ephemeral: true
+                });
+            }
+            if (customId == 'modalMessagauto') {
+                let CanalFluxo = interaction.fields.getTextInputValue('inputcanalMsgauto');
+                let MensagemTosend = interaction.fields.getTextInputValue('inputMsgauto');;
+                let LabelButon = interaction.fields.getTextInputValue('inputlabelButton');
+                let UrlButton = interaction.fields.getTextInputValue('inputLinkbutton');
+                let EmojiMsg = interaction.fields.getTextInputValue('inputemojibuttonAuto');
+
+                const testchannel = await interaction.guild.channels.cache.get(CanalFluxo);
+
+                if (!testchannel) return interaction.reply({ content: `${EMOJI.vx16 == null ? `` : `<:${EMOJI.vx16.name}:${EMOJI.vx16.id}>`} O canal escolhido não foi encontrado`, ephemeral: true })
+                const EMOJI = await obterEmoji();
+                Autos.set(`AutoMsg.${CanalFluxo}`, {
+                    Channel: CanalFluxo,
+                    Label: null,
+                    mesage: MensagemTosend,
+                    UrlButon: null,
+                    EmojButon: null
+                });
+
+                if (UrlButton !== '') {
+                    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+                    if (!urlRegex.test(UrlButton)) {
+                        return interaction.reply({ content: `Você inseriu uma URL inválida!`, ephemeral: true });
+                    } else {
+                        Autos.set(`AutoMsg.${CanalFluxo}.UrlButon`, UrlButton)
+                        if (EmojiMsg !== '') {
+                            Autos.set(`AutoMsg.${CanalFluxo}.EmojButon`, EmojiMsg)
+                        } else {
+                            Autos.set(`AutoMsg.${CanalFluxo}.EmojButon`, '1276927587083358321');
+                        }
+                        if (LabelButon !== '') Autos.set(`AutoMsg.${CanalFluxo}.Label`, LabelButon);
+                    }
+                }
+
+                const butonBoll = await Autos.get(`AutoMsg.${CanalFluxo}.UrlButon`)
+                if (!butonBoll) {
+                    testchannel.send({ content: `${MensagemTosend}` }).then((msg) => {
+                        Autos.set(`AutoMsg.${CanalFluxo}.messageid`, msg.id);
+                    });
+                } else {
+
+                    const Lubel = await Autos.get(`AutoMsg.${CanalFluxo}.Label`);
+
+                    const butt = new ButtonBuilder()
+                        .setURL(`${butonBoll}`)
+                        .setStyle(5)
+                        .setEmoji(Autos.get(`AutoMsg.${CanalFluxo}.EmojButon`))
+
+                    if (Lubel !== null) butt.setLabel(Lubel);
+
+                    const ButtonAuto = new ActionRowBuilder().addComponents(butt)
+
+                    testchannel.send({ content: `${MensagemTosend}`, components: [ButtonAuto] }).then((msg) => {
+                        Autos.set(`AutoMsg.${CanalFluxo}.messageid`, msg.id);
+                    });
+                }
+
+                interaction.reply({ content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} Mensagem automática configurada com sucesso!`, ephemeral: true })
+
+            }
+            if (customId == 'modalTimeRepost') {
+                let TimeRepost = interaction.fields.getTextInputValue('inputTimeRepostAnns');
+                const EMOJI = await obterEmoji();
+
+                function isValidTime(time) {
+                    const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+                    return regex.test(time);
+                }
+
+                if (!isValidTime(TimeRepost)) {
+                    return interaction.reply({
+                        content: `${EMOJI.vx16 == null ? `` : `<:${EMOJI.vx16.name}:${EMOJI.vx16.id}>`} Os horários de abertura e fechamento devem estar no formato correto (HH:MM) e entre 00:00 e 23:59.`,
+                        ephemeral: true
+                    });
+                }
+                Autos.set(`AutoAnnounce.repostTime`, TimeRepost);
+
+                interaction.reply({ content: `${EMOJI.vx3 == null ? `` : `<:${EMOJI.vx3.name}:${EMOJI.vx3.id}>`} Repostagem automática configurada com sucesso!`, ephemeral: true })
             }
         }
     }
