@@ -4,4 +4,11 @@ README.md
 token.json
 node_modules
 package-lock.json
-
+index.js
+node_modules
+package-lock.json
+Database/infoloja.json
+Database/produtos.json
+Database/settings.json
+Database/emojis.json
+Database/carrinhos.json
