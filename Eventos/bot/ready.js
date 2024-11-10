@@ -119,7 +119,7 @@ module.exports = {
     Antifraude(client);
 
     setInterval(async () => { deleteCarts(client) }, 5000);
-    setInterval(async () => { Antifraude(client) }, 24 * 60 * 1000);
+    setInterval(async () => { Antifraude(client) }, 24 * 60 * 60 * 1000);
 
     console.log(colors.green('[STATUS]') + " " + client.user.username + " acabou de iniciar.");
     console.log(colors.green("[STATUS]") + " Online em " + client.guilds.cache.size + " servidores");
